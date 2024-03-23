@@ -29,7 +29,7 @@ class _OTPState extends State<OTP> {
                       Container(
                         height: 200,
                         width: 200,
-                        child: Image.asset("images/otp_val.jpg"),
+                        child: Image.asset("images/otp_val.png"),
                       ),
                       SizedBox(
                         height: 5,
@@ -63,17 +63,6 @@ class _OTPState extends State<OTP> {
                             textStyle: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                       )
-                      // OtpTextField(
-                      //   numberOfFields: 5,
-                      //   showCursor: true,
-                      //   showFieldAsBox: true,
-                      //   fieldWidth: 55,
-                      //   // borderColor: Colors.black,
-                      //   focusedBorderColor: Colors.blue,
-                      //   enabledBorderColor: Colors.black,
-                      //   disabledBorderColor: Colors.grey,
-                      //   textStyle: TextStyle(fontSize: 24),
-                      // ),
                     ],
                   ),
                 )

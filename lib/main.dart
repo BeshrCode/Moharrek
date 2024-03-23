@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moharrek/auth/login.dart';
 import 'package:moharrek/auth/otp_validation.dart';
-import 'package:moharrek/auth/signup.dart';
+import 'package:moharrek/auth/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
           )),
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: Signup(),
+        child: Register(),
       ),
     );
   }
