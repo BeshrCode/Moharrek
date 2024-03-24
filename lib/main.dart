@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moharrek/auth/login.dart';
-import 'package:moharrek/auth/otp_validation.dart';
-import 'package:moharrek/auth/register.dart';
+import 'package:moharrek/auth/otp_validation_page.dart';
+import 'package:moharrek/auth/register_page.dart';
+import 'package:moharrek/auth/username_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+        return Directionality(textDirection: TextDirection.rtl, child: child!);
+      },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
           )),
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: Register(),
+        child: RegisterPage(),
       ),
     );
   }

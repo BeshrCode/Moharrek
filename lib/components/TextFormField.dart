@@ -18,10 +18,11 @@ class CustomeTextFormField extends StatelessWidget {
         }
       },
       decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           hintText: hint,
           hintStyle: TextStyle(
               color: Colors.grey[500],
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.normal),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -71,6 +72,8 @@ class _CustomePhoneNumberTextFormFieldState
             }
           },
           decoration: InputDecoration(
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10, vertical: 15),
               hintText: widget.hint,
               hintStyle: TextStyle(
                   color: Colors.grey[500],

@@ -1,19 +1,19 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/auth/otp_validation.dart';
+import 'package:moharrek/auth/otp_validation_page.dart';
 import 'package:moharrek/components/AuthButton.dart';
 import 'package:moharrek/components/Logo.dart';
 import 'package:moharrek/components/TextFormField.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController username = TextEditingController();
   late TextEditingController phoneNumber = TextEditingController();
   // late TextEditingController password = TextEditingController();
@@ -65,7 +65,7 @@ class _RegisterState extends State<Register> {
               height: 20,
             ),
             CustomePhoneNumberTextFormField(
-              hint: "مثال: 560000000",
+              hint: "5xxxxxxxx",
               myController: phoneNumber,
               suffixIcon: Container(
                   padding: EdgeInsets.all(10),
@@ -84,8 +84,8 @@ class _RegisterState extends State<Register> {
                 onPressed: () {
                   if (formState.currentState!.validate()) {
                     print("============ yes");
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => OTP()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => OTPValidationPage()));
                   }
                 }),
           ],
