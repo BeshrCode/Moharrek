@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:moharrek/auth/username_page.dart';
+import 'package:moharrek/pages/auth/username_page.dart';
 import 'package:pinput/pinput.dart';
 
 class OTPValidationPage extends StatefulWidget {

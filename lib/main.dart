@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/auth/login.dart';
-import 'package:moharrek/auth/otp_validation_page.dart';
-import 'package:moharrek/auth/register_page.dart';
-import 'package:moharrek/auth/username_page.dart';
+import 'package:moharrek/pages/auth/otp_validation_page.dart';
+import 'package:moharrek/pages/auth/register_page.dart';
+import 'package:moharrek/pages/auth/username_page.dart';
+import 'package:moharrek/bottom_nav_bar.dart';
+import 'package:moharrek/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           fontFamily: "NotoKufiArabic",
           textTheme: TextTheme(
-            bodySmall: TextStyle(fontFamily: "NotoKufiArabic", fontSize: 14),
+            bodySmall: TextStyle(
+              fontFamily: "NotoKufiArabic",
+              fontSize: 14,
+            ),
             bodyMedium: TextStyle(fontFamily: "NotoKufiArabic", fontSize: 16),
             bodyLarge: TextStyle(fontFamily: "NotoKufiArabic", fontSize: 18),
             titleSmall: TextStyle(

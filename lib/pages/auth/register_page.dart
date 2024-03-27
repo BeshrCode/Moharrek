@@ -1,7 +1,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/auth/otp_validation_page.dart';
+import 'package:moharrek/pages/auth/otp_validation_page.dart';
 import 'package:moharrek/components/AuthButton.dart';
 import 'package:moharrek/components/Logo.dart';
 import 'package:moharrek/components/TextFormField.dart';

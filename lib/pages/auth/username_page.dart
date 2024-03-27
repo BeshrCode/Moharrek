@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moharrek/bottom_nav_bar.dart';
 import 'package:moharrek/components/AuthButton.dart';
 import 'package:moharrek/components/TextFormField.dart';
 
@@ -48,7 +49,7 @@ class _UsernamePageState extends State<UsernamePage> {
                 height: 20,
               ),
               CustomeTextFormField(
-                  hint: "اسم المستخدم", myController: username),
+                  hint: "أدخل اسم المستخدم", myController: username),
               const SizedBox(
                 height: 5,
               ),
@@ -67,7 +68,12 @@ class _UsernamePageState extends State<UsernamePage> {
                   color: Colors.blue,
                   isLoading: isLoading,
                   onPressed: () {
-                    if (formState.currentState!.validate()) {}
+                    if (formState.currentState!.validate()) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => BottomNavBar()),
+                        (route) => false,
+                      );
+                    }
                   }),
             ],
           ),
