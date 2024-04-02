@@ -52,54 +52,51 @@ class _CustomePhoneNumberTextFormFieldState
     extends State<CustomePhoneNumberTextFormField> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: TextFormField(
-          keyboardType: TextInputType.number,
-          cursorColor: Colors.blue,
-          textAlign: TextAlign.left,
-          controller: widget.myController,
-          onChanged: (value) => setState(() {}),
-          validator: (value) {
-            if (value == "") {
-              return "الرجاء إدخال رقم الهاتف";
-            }
-            if (value!.length != 9) {
-              return "يجب أن يكون الرقم من 9 خانات";
-            }
-            final n = num.tryParse(value);
-            if (n == null) {
-              return 'رقم غير صالح';
-            }
-          },
-          decoration: InputDecoration(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              hintText: widget.hint,
-              hintStyle: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              suffixIcon: widget.suffixIcon,
-              prefix: widget.myController.text.length == 9
-                  ? Container(
-                      // padding: EdgeInsets.all(10),
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.green),
-                      child: Icon(
-                        Icons.done,
-                        color: Colors.white,
-                        size: 15,
-                      ),
-                    )
-                  : null)),
-    );
+    return TextFormField(
+        keyboardType: TextInputType.number,
+        cursorColor: Colors.blue,
+        textAlign: TextAlign.left,
+        controller: widget.myController,
+        onChanged: (value) => setState(() {}),
+        validator: (value) {
+          if (value == "") {
+            return "الرجاء إدخال رقم الهاتف";
+          }
+          if (value!.length != 9) {
+            return "يجب أن يكون الرقم من 9 خانات";
+          }
+          final n = num.tryParse(value);
+          if (n == null) {
+            return 'رقم غير صالح';
+          }
+        },
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            hintText: widget.hint,
+            hintStyle: TextStyle(
+                color: Colors.grey[500],
+                fontSize: 18,
+                fontWeight: FontWeight.normal),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            suffixIcon: widget.suffixIcon,
+            prefix: widget.myController.text.length == 9
+                ? Container(
+                    // padding: EdgeInsets.all(10),
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.green),
+                    child: Icon(
+                      Icons.done,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  )
+                : null));
   }
 }
 
