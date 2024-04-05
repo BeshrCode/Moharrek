@@ -3,6 +3,7 @@ import 'package:moharrek/pages/auth/otp_validation_page.dart';
 import 'package:moharrek/pages/auth/register_page.dart';
 import 'package:moharrek/pages/auth/username_page.dart';
 import 'package:moharrek/bottom_nav_bar.dart';
+import 'package:moharrek/pages/car_details_page.dart';
 import 'package:moharrek/pages/home_page.dart';
 import 'package:moharrek/pages/profile_page.dart';
 

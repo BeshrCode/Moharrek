@@ -128,20 +128,9 @@ class HomePageState extends State<HomePage> {
             SizedBox(
               height: 10,
             ),
-            CustomCarCard(
-                carName: "كامري تيوتا",
-                Year: 2020,
-                seller: "mohammed",
-                isNew: false,
-                price: 23000,
-                location: "مكة",
-                mileage: 45000,
-                uploadDate: "3 ايام",
-                image: "images/car_card/blue_car.jpg"),
-
             SizedBox(
-              height: 10,
-            ),
+            height: 20,
+          ),
             CustomCarCard(
                 carName: "كامري تيوتا",
                 Year: 2020,
