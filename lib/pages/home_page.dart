@@ -52,14 +52,6 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(actions: [
-
-      //   IconButton(
-      //       onPressed: () {
-      //         showSearch(context: context, delegate: CustomSearch());
-      //       },
-      //       icon: Icon(Icons.search))
-      // ]),
       body: Container(
         padding: EdgeInsets.only(
           left: 10,
@@ -195,8 +187,6 @@ class CustomSearch extends SearchDelegate {
     required String hintText,
   }) : super(
             searchFieldLabel: hintText,
-            // keyboardType: TextInputType.text,
-            // textInputAction: TextInputAction.search,
             searchFieldStyle: TextStyle(
                 fontSize: 20,
                 color: Colors.black,
@@ -246,49 +236,3 @@ class CustomCategories extends StatelessWidget {
     );
   }
 }
-
-// class CustomCard extends StatelessWidget {
-//   final String name;
-//   final String type;
-//   final int price;
-//   final String image;
-//   const CustomCard(this.name, this.type, this.price, this.image);
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       color: Colors.white,
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Container(
-//             padding: EdgeInsets.all(5),
-//             width: 200,
-//             height: 200,
-//             margin: EdgeInsets.only(bottom: 2),
-//             // width: 180,
-//             // height: 230,
-//             color: Colors.grey[200],
-//             child: Image.asset(
-//               image,
-//               fit: BoxFit.contain,
-//             ),
-//             // child: Image.asset("Imgs/"),
-//           ),
-//           Container(
-//               child: Text(name,
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                   ))),
-//           Container(
-//               child: Text(type,
-//                   style: TextStyle(fontSize: 14, color: Colors.grey))),
-//           Container(
-//               child: Text("\$$price",
-//                   style: TextStyle(
-//                     fontSize: 25,
-//                   ))),
-//         ],
-//       ),
-//     );
-//   }
-// }

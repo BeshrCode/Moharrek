@@ -71,6 +71,13 @@ class _AddCarPageState extends State<AddCarPage> {
     }
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    mileage.dispose();
+  }
+
   final GlobalKey<FormState> formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {

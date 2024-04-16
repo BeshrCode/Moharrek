@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           )),
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: BottomNavBar(),
+        child: RegisterPage(),
       ),
     );
   }

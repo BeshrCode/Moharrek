@@ -14,7 +14,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late TextEditingController username = TextEditingController();
   late TextEditingController phoneNumber = TextEditingController();
   // late TextEditingController password = TextEditingController();
 
@@ -32,6 +31,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool isLaoding = false;
   GlobalKey<FormState> formState = GlobalKey();
+  
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    phoneNumber.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
