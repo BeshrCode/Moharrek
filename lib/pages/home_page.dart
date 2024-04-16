@@ -73,16 +73,14 @@ class HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.black, width: 1),
                           borderRadius: BorderRadius.circular(20)),
-                      child: Expanded(
-                        child: Row(
-                          children: [
-                            Icon(Icons.search),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text("البحث..."),
-                          ],
-                        ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("البحث..."),
+                        ],
                       ))),
             ),
             Container(
