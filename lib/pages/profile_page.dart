@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:moharrek/pages/my_car.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -52,7 +53,10 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 10,
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => MyCarPage()));
+            },
             child: Row(
               children: [
                 Icon(Icons.cases_rounded),

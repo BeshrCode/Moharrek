@@ -60,7 +60,9 @@ class CustomeButtonIcon extends StatelessWidget {
       required this.buttonColor,
       required this.icon,
       required this.onPressed,
-      required this.isLoading, required this.textColor, required this.iconColor});
+      required this.isLoading,
+      required this.textColor,
+      required this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,62 @@ class CustomeButtonIcon extends StatelessWidget {
                     margin: const EdgeInsets.only(left: 10),
                     height: 20,
                     width: 20,
-                    child: Icon(icon, color: iconColor,),
+                    child: Icon(
+                      icon,
+                      color: iconColor,
+                    ),
+                  )
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class CustomeUploadButtonIcon extends StatelessWidget {
+  final String text;
+  final Color color;
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool isLoading;
+
+  const CustomeUploadButtonIcon(
+      {super.key,
+      required this.text,
+      required this.color,
+      required this.icon,
+      required this.onPressed,
+      required this.isLoading});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: MaterialButton(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        onPressed: onPressed,
+        color: color,
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: isLoading
+            ? Container(
+                child: CircularProgressIndicator(
+                color: Colors.white,
+              ))
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    text,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    height: 20,
+                    width: 20,
+                    child: Icon(icon, color: Colors.white),
                   )
                 ],
               ),

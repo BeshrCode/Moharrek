@@ -57,6 +57,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
+      bottomScreenMargin: 55,
       context,
       controller: controller,
       screens: _buildScreens(),

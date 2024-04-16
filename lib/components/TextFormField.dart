@@ -100,6 +100,55 @@ class _CustomePhoneNumberTextFormFieldState
   }
 }
 
+class CustomNumberTextFormField extends StatefulWidget {
+  final String hint;
+  final TextEditingController myController;
+  const CustomNumberTextFormField(
+      {super.key, required this.hint, required this.myController});
+
+  @override
+  State<CustomNumberTextFormField> createState() =>
+      _CustomNumberTextFormFieldState();
+}
+
+class _CustomNumberTextFormFieldState extends State<CustomNumberTextFormField> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        keyboardType: TextInputType.number,
+        cursorColor: Colors.blue,
+        // textAlign: TextAlign.left,
+        controller: widget.myController,
+        onChanged: (value) => setState(() {}),
+        validator: (value) {
+          if (value == "") {
+            return "رجاء أدخل الرقم";
+          }
+          final n = num.tryParse(value!);
+          if (n == null) {
+            return 'رقم غير صالح';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          hintText: widget.hint,
+          hintStyle: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 14,
+              fontWeight: FontWeight.normal),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue),
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.blue),
+              borderRadius: BorderRadius.all(Radius.circular(40))),
+          // suffixIcon: widget.suffixIcon,
+        ));
+  }
+}
+
 // class CustomePhoneNumberTextFormField extends StatelessWidget {
 //   final String hint;
 //   final TextEditingController myController;

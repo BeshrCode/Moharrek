@@ -61,8 +61,11 @@ class HomePageState extends State<HomePage> {
       //       icon: Icon(Icons.search))
       // ]),
       body: Container(
-        padding: EdgeInsets.all(10),
-        color: Colors.white,
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 10,
+          top: 10,
+        ),
         child: ListView(
           children: [
             Container(
@@ -125,12 +128,10 @@ class HomePageState extends State<HomePage> {
               ),
             ),
             // Image.asset("images/Car_card.jpg"),
+
             SizedBox(
               height: 10,
             ),
-            SizedBox(
-            height: 20,
-          ),
             CustomCarCard(
                 carName: "كامري تيوتا",
                 Year: 2020,

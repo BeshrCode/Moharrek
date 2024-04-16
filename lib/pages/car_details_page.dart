@@ -142,7 +142,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
         ],
       ),
