@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/home/home_widget.dart';
+import 'package:moharrek/widget/home_widget.dart';
 import 'package:moharrek/components/button.dart';
 
 class CarDetailsPage extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/auction/auction_widget.dart';
-import 'package:moharrek/pages/home/home_widget.dart';
+import 'package:moharrek/widget/auction_widget.dart';
+import 'package:moharrek/widget/home_widget.dart';
 
 class AuctionPage extends StatefulWidget {
   const AuctionPage({super.key});

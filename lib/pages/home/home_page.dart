@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/home/home_widget.dart';
+import 'package:moharrek/widget/home_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
