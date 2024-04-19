@@ -122,7 +122,7 @@ class _CustomNumberTextFormFieldState extends State<CustomNumberTextFormField> {
         onChanged: (value) => setState(() {}),
         validator: (value) {
           if (value == "") {
-            return "رجاء أدخل الرقم";
+            return "الحقل فارغ";
           }
           final n = num.tryParse(value!);
           if (n == null) {

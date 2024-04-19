@@ -1,10 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/car_widget.dart';
-import 'package:moharrek/pages/profile_page.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:moharrek/pages/home/home_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,13 +13,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  // List brands = [
-  //   "Toyota",
-  //   "Ford",
-  //   "BMW",
-  //   "Honda",
-  //   "Nissan",
-  // ];
+
   List brandsCateg = [
     {"brand": "الكل", "categColorIcon": Colors.blue},
     {"brand": "Toyota", "categColorIcon": Colors.grey[300]},
@@ -99,6 +89,7 @@ class HomePageState extends State<HomePage> {
                 itemCount: brandsCateg.length,
                 itemBuilder: (context, index) {
                   return InkWell(
+                    splashColor: Colors.white,
                     onTap: () {
                       print(index);
                       colorizeCateg(index);

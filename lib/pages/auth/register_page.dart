@@ -1,10 +1,8 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:moharrek/pages/auth/otp_validation_page.dart';
-import 'package:moharrek/components/AuthButton.dart';
-import 'package:moharrek/components/Logo.dart';
-import 'package:moharrek/components/TextFormField.dart';
+import 'package:moharrek/components/auth_button.dart';
+import 'package:moharrek/components/text_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

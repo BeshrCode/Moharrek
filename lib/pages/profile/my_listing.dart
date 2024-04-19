@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/car_widget.dart';
-import 'package:moharrek/pages/add_car_page.dart';
+import 'package:moharrek/pages/home/home_widget.dart';
+import 'package:moharrek/pages/profile/add_car_page.dart';
 
-class MyCarPage extends StatefulWidget {
-  const MyCarPage({super.key});
+class MyListingPage extends StatefulWidget {
+  const MyListingPage({super.key});
 
   @override
-  State<MyCarPage> createState() => _MyCarPageState();
+  State<MyListingPage> createState() => _MyListingPageState();
 }
 
-class _MyCarPageState extends State<MyCarPage> {
+class _MyListingPageState extends State<MyListingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _MyCarPageState extends State<MyCarPage> {
         ),
         appBar: AppBar(
           title: Text(
-            "مركباتي",
+            "إعلاناتي",
             style: TextStyle(fontSize: 24),
           ),
         ),

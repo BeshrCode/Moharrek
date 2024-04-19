@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/my_car.dart';
+import 'package:moharrek/pages/profile/my_listing.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -54,8 +54,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => MyCarPage()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MyListingPage()));
             },
             child: Row(
               children: [
@@ -63,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   width: 10,
                 ),
-                Text("مركباتي",
+                Text("إعلاناتي",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],

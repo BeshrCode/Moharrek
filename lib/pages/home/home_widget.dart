@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/car_details_page.dart';
+import 'package:moharrek/components/button.dart';
+import 'package:moharrek/pages/home/car_details_page.dart';
 
 class CarPrimarySpecific extends StatelessWidget {
   final String text;
@@ -755,3 +756,4 @@ class CustomCarDesc extends StatelessWidget {
     );
   }
 }
+

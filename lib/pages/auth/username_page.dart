@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moharrek/bottom_nav_bar.dart';
-import 'package:moharrek/components/AuthButton.dart';
-import 'package:moharrek/components/TextFormField.dart';
+import 'package:moharrek/components/auth_button.dart';
+import 'package:moharrek/components/text_form_field.dart';
 
 class UsernamePage extends StatefulWidget {
   const UsernamePage({super.key});

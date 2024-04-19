@@ -8,8 +8,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moharrek/components/TextFormField.dart';
+import 'package:moharrek/components/text_form_field.dart';
 import 'package:moharrek/components/dropdown_menu_button.dart';
+import 'package:moharrek/components/year_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class AddCarPage extends StatefulWidget {
@@ -115,7 +116,7 @@ class _AddCarPageState extends State<AddCarPage> {
                 }),
             SizedBox(height: 20),
             // Text("اختر سنة التصنيع"),
-            YearPicker(selectedYear: (value) {
+            CustomYearPicker(selectedYear: (value) {
               year = value;
               print(year);
             }),
@@ -289,72 +290,6 @@ class _AddCarPageState extends State<AddCarPage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class YearPicker extends StatefulWidget {
-  final Function(int) selectedYear;
-  const YearPicker({super.key, required this.selectedYear});
-
-  @override
-  State<YearPicker> createState() => _YearPickerState();
-}
-
-class _YearPickerState extends State<YearPicker> {
-  int selectedValue = DateTime.now().year;
-  List<int> yearList = List.generate(DateTime.now().year - 1980 + 1, (index) {
-    int year = 1980 + index;
-    return year;
-  });
-  List<Widget> yearWidgets = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    for (int num in yearList) {
-      yearWidgets.add(Text(num.toString()));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-          decoration: BoxDecoration(
-              border: Border.all(width: 1, color: Colors.blue),
-              borderRadius: BorderRadius.circular(30)),
-          child: CupertinoButton(
-              // color: Colors.blue,
-              // borderRadius: BorderRadius.circular(30),
-              child: Text(
-                " حدد سنة الصنع: $selectedValue",
-                style: TextStyle(fontFamily: "NotoKufiArabic", fontSize: 16),
-              ),
-              disabledColor: Colors.red,
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              onPressed: () {
-                showCupertinoModalPopup(
-                  context: context,
-                  builder: (_) => SizedBox(
-                    width: double.infinity,
-                    height: 250,
-                    child: CupertinoPicker(
-                      backgroundColor: Colors.white,
-                      itemExtent: 30,
-                      scrollController: FixedExtentScrollController(
-                          initialItem: yearList.length - 1),
-                      children: yearWidgets,
-                      onSelectedItemChanged: (int value) {
-                        selectedValue = yearList[value];
-                        widget.selectedYear(selectedValue);
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                );
-              })),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/car_widget.dart';
-import 'package:moharrek/components/Button.dart';
+import 'package:moharrek/pages/home/home_widget.dart';
+import 'package:moharrek/components/button.dart';
 
 class CarDetailsPage extends StatefulWidget {
   const CarDetailsPage({super.key});
