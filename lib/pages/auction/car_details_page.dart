@@ -3,7 +3,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:moharrek/widget/auction_widget.dart';
-import 'package:moharrek/widget/home_widget.dart';
 import 'package:moharrek/components/button.dart';
 import 'package:moharrek/components/text_form_field.dart';
 
@@ -21,7 +20,7 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
 
   List<Widget> carImage = [
     Image.asset("images/car_card/blue_car.jpg"),
-    Image.asset("images/red_car.png"),
+    Image.asset("images/car_2.jpg"),
   ];
   final List<Map> bidders = [
     {
@@ -83,7 +82,10 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
             child: AlertDialog(
               title: Text("أدخل مبلغ المزايدة"),
               content: CustomNumberTextFormField(
-                  hint: "أدخل المبلغ", myController: bidAmount),
+                  hint: "أدخل المبلغ",
+                  suffixIcon: Container(
+                      padding: EdgeInsets.all(10), child: Text("ر.س")),
+                  myController: bidAmount),
               actions: [
                 TextButton(
                     onPressed: () {

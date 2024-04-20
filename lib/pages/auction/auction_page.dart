@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moharrek/widget/auction_widget.dart';
-import 'package:moharrek/widget/home_widget.dart';
 
 class AuctionPage extends StatefulWidget {
   const AuctionPage({super.key});
@@ -34,7 +33,7 @@ class _AuctionPageState extends State<AuctionPage> {
                 model: "كامري",
                 make: "تويوتا",
                 year: 2023,
-                image: "images/car_card/blue_car.jpg",
+                image: "images/car_2.jpg",
                 higherBid: 3250000,
                 endDate: "07 شوال"),
             SizedBox(
@@ -47,6 +46,9 @@ class _AuctionPageState extends State<AuctionPage> {
                 image: "images/car_card/blue_car.jpg",
                 higherBid: 3250000,
                 endDate: "07 شوال"),
+            SizedBox(
+              height: 20,
+            ),
           ],
         ));
   }

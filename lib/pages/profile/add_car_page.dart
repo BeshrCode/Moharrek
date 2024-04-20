@@ -123,7 +123,10 @@ class _AddCarPageState extends State<AddCarPage> {
             SizedBox(height: 30),
 
             CustomNumberTextFormField(
-                hint: "أدخل مقدار الممشى...", myController: mileage),
+                hint: "أدخل مقدار الممشى...",
+                prefixIcon:
+                    Container(padding: EdgeInsets.all(13), child: Text("km")),
+                myController: mileage),
             SizedBox(height: 20),
             Text("حدد نظام القير"),
             SizedBox(height: 5),
@@ -218,7 +221,7 @@ class _AddCarPageState extends State<AddCarPage> {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            "ارفع الفحص الدوري للمركبة",
+                            "ارفع ملف الفحص الدوري للمركبة",
                             style: TextStyle(fontSize: 14),
                           ),
                         ],
@@ -226,6 +229,8 @@ class _AddCarPageState extends State<AddCarPage> {
                 ),
               ),
             ),
+            SizedBox(height: 25),
+            CustomTextField(hint: "الوصف (إختياري)"),
             SizedBox(height: 20),
 
             ElevatedButton(
@@ -270,14 +275,13 @@ class _AddCarPageState extends State<AddCarPage> {
                         dialogType: DialogType.warning,
                         animType: AnimType.rightSlide,
                         title: 'تنبيه',
-                        desc:
-                            'في حال كان هناك أي معلومات خاطئة؛ فسيتم حظر الحساب',
+                        desc: 'رجاء تأكد من عدم وجود أي معلومات خاطئة.',
                         titleTextStyle: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                         descTextStyle: TextStyle(fontSize: 14),
                         btnOkColor: Colors.blue,
                         btnOkText: "استمرار",
-                        btnCancelText: "إالغاء",
+                        btnCancelText: "إلغاء",
                         btnOkOnPress: () {},
                         btnCancelOnPress: () {})
                     .show();

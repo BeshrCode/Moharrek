@@ -33,6 +33,32 @@ class CustomeTextFormField extends StatelessWidget {
   }
 }
 
+class CustomTextField extends StatelessWidget {
+  final String hint;
+  CustomTextField({super.key, required this.hint});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      maxLines: 3,
+      maxLength: 100,
+      cursorColor: Colors.blue,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          hintText: hint,
+          hintStyle: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 16,
+              fontWeight: FontWeight.normal),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)))),
+    );
+  }
+}
+
 class CustomePhoneNumberTextFormField extends StatefulWidget {
   final String hint;
   final TextEditingController myController;
@@ -103,8 +129,14 @@ class _CustomePhoneNumberTextFormFieldState
 class CustomNumberTextFormField extends StatefulWidget {
   final String hint;
   final TextEditingController myController;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
   const CustomNumberTextFormField(
-      {super.key, required this.hint, required this.myController});
+      {super.key,
+      required this.hint,
+      required this.myController,
+      this.suffixIcon,
+      this.prefixIcon});
 
   @override
   State<CustomNumberTextFormField> createState() =>
@@ -131,6 +163,8 @@ class _CustomNumberTextFormFieldState extends State<CustomNumberTextFormField> {
           return null;
         },
         decoration: InputDecoration(
+          suffixIcon: widget.suffixIcon ?? null,
+          prefixIcon: widget.prefixIcon ?? null,
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           hintText: widget.hint,
           hintStyle: TextStyle(

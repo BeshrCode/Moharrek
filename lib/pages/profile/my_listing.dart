@@ -31,10 +31,23 @@ class _MyListingPageState extends State<MyListingPage> {
           child: ListView(
             children: [
               MyListingCarCard(
-                  carName: "تويوتا كامري",
+                  model: "كامري",
+                  make: "تويوتا",
                   year: 2023,
                   uploadDate: "قبل اسبوع",
-                  image: "images/car_card/blue_car.jpg")
+                  image: "images/car_card/blue_car.jpg"),
+              SizedBox(
+                height: 20,
+              ),
+              MyListingCarCard(
+                  model: "كامري",
+                  make: "تويوتا",
+                  year: 2023,
+                  uploadDate: "قبل اسبوع",
+                  image: "images/car_2.jpg"),
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ));

@@ -39,8 +39,9 @@ class CarPrimarySpecific extends StatelessWidget {
 }
 
 class CustomCarCard extends StatefulWidget {
-  final String carName;
-  final int Year;
+  final String model;
+  final String make;
+  final int year;
   final String seller;
   final bool isNew;
   final double price;
@@ -50,8 +51,9 @@ class CustomCarCard extends StatefulWidget {
   final String image;
   const CustomCarCard(
       {super.key,
-      required this.carName,
-      required this.Year,
+      required this.model,
+      required this.make,
+      required this.year,
       required this.seller,
       required this.isNew,
       required this.price,
@@ -107,7 +109,7 @@ class _CustomCarCardState extends State<CustomCarCard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "${widget.carName}",
+                                  "${widget.make} ${widget.model}",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontFamily: "Rubik",
@@ -140,7 +142,7 @@ class _CustomCarCardState extends State<CustomCarCard> {
                               height: 5,
                             ),
                             Text(
-                              " السنة: ${widget.Year}",
+                              " سنة الصنع: ${widget.year}",
                               style: TextStyle(
                                   fontSize: 12,
                                   fontFamily: "Rubik",
@@ -191,14 +193,16 @@ class _CustomCarCardState extends State<CustomCarCard> {
 }
 
 class MyListingCarCard extends StatefulWidget {
-  final String carName;
+  final String model;
+  final String make;
   final int year;
 
   final String uploadDate;
   final String image;
   const MyListingCarCard(
       {super.key,
-      required this.carName,
+      required this.model,
+      required this.make,
       required this.year,
       required this.uploadDate,
       required this.image});
@@ -248,7 +252,7 @@ class _MyListingCarCardState extends State<MyListingCarCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${widget.carName}",
+                                "${widget.make} ${widget.model}",
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontFamily: "Rubik",
@@ -294,7 +298,8 @@ class _MyListingCarCardState extends State<MyListingCarCard> {
 }
 
 class CustomVerticalCarCard extends StatefulWidget {
-  final String carName;
+  final String model;
+  final String make;
   final int year;
   final String seller;
   final bool isNew;
@@ -305,7 +310,8 @@ class CustomVerticalCarCard extends StatefulWidget {
   final String image;
   const CustomVerticalCarCard(
       {super.key,
-      required this.carName,
+      required this.model,
+      required this.make,
       required this.year,
       required this.seller,
       required this.isNew,
@@ -349,7 +355,7 @@ class _CustomVerticalCarCardState extends State<CustomVerticalCarCard> {
               height: 5,
             ),
             Text(
-              "${widget.carName}",
+              "${widget.make} ${widget.model}",
               style: TextStyle(
                   fontSize: 18,
                   fontFamily: "Rubik",
@@ -436,14 +442,18 @@ class _CustomVerticalCarCardState extends State<CustomVerticalCarCard> {
 }
 
 class CustomCarDetailHeder extends StatefulWidget {
-  final String carName;
+  final String model;
+  final String make;
+  final int year;
   final double carPrice;
   final String carLocation;
   final String uploadDate;
   final List<Widget> carImage;
   const CustomCarDetailHeder(
       {super.key,
-      required this.carName,
+      required this.model,
+      required this.make,
+      required this.year,
       required this.carPrice,
       required this.carLocation,
       required this.uploadDate,
@@ -507,7 +517,7 @@ class _CustomCarDetailHederState extends State<CustomCarDetailHeder> {
             Column(
               children: [
                 Text(
-                  "${widget.carName}",
+                  "${widget.make} ${widget.model} ${widget.year}",
                   style: TextStyle(
                       fontSize: 26,
                       fontFamily: "Rubik",
@@ -745,7 +755,6 @@ class CustomCarDesc extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(15),
-      height: 120,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30), color: Colors.grey[300]),
       child: Text(
@@ -756,4 +765,3 @@ class CustomCarDesc extends StatelessWidget {
     );
   }
 }
-

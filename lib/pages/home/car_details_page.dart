@@ -13,7 +13,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   int imageNum = 0;
   List<Widget> carImage = [
     Image.asset("images/car_card/blue_car.jpg"),
-    Image.asset("images/red_car.png"),
+    Image.asset("images/car_2.jpg"),
   ];
 
   @override
@@ -29,7 +29,9 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
             height: 5,
           ),
           CustomCarDetailHeder(
-              carName: "تويوتا كامري 2023",
+               model: "كامري",
+              make: "تويوتا",
+              year: 2023,
               carPrice: 45000,
               carLocation: "مكة المكرمة",
               uploadDate: "قبل ثلاثة ايام",
@@ -79,9 +81,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
           SizedBox(
             height: 5,
           ),
-          CustomCarDesc(
-            desc: "بدون رش فل كامل مفحوصة مجددة، الرجاء عدم التواصل لغير الجاد",
-          ),
+          CustomCarDesc(desc: "مفحوصة ومجددة فل كامل"),
           SizedBox(
             height: 20,
           ),
@@ -100,7 +100,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               scrollDirection: Axis.horizontal,
               children: [
                 CustomVerticalCarCard(
-                    carName: "كامري تيوتا",
+                     model: "كامري",
+                    make: "تويوتا",
                     year: 2020,
                     seller: "mohammed",
                     isNew: false,
@@ -113,7 +114,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                   width: 20,
                 ),
                 CustomVerticalCarCard(
-                    carName: "كامري تويوتا",
+                     model: "كامري",
+                    make: "تويوتا",
                     year: 2020,
                     seller: "mohammed",
                     isNew: false,
@@ -121,12 +123,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                     location: "مكة",
                     mileage: 45000,
                     uploadDate: "3 ايام",
-                    image: "images/red_car.png"),
+                    image: "images/car_2.jpg"),
                 SizedBox(
                   width: 20,
                 ),
                 CustomVerticalCarCard(
-                    carName: "كامري تيوتا",
+                     model: "كامري",
+                    make: "تويوتا",
                     year: 2020,
                     seller: "mohammed",
                     isNew: false,
