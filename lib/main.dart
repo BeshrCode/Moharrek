@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moharrek/bottom_nav_bar.dart';
 import 'package:moharrek/pages/auth/register_page.dart';
+import 'package:moharrek/pages/home/home_page.dart';
 
 void main() {
   runApp(const MyApp());

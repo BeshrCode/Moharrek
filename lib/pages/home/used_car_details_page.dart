@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:moharrek/widget/home_widget.dart';
 import 'package:moharrek/components/button.dart';
 
-class CarDetailsPage extends StatefulWidget {
-  const CarDetailsPage({super.key});
+class UsedCarDetailsPage extends StatefulWidget {
+  const UsedCarDetailsPage({super.key});
 
   @override
-  State<CarDetailsPage> createState() => _CarDetailsPageState();
+  State<UsedCarDetailsPage> createState() => _UsedCarDetailsPageState();
 }
 
-class _CarDetailsPageState extends State<CarDetailsPage> {
+class _UsedCarDetailsPageState extends State<UsedCarDetailsPage> {
   int imageNum = 0;
   List<Widget> carImage = [
     Image.asset("images/car_card/blue_car.jpg"),
@@ -28,8 +28,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
           SizedBox(
             height: 5,
           ),
-          CustomCarDetailHeder(
-               model: "كامري",
+          UsedCarDetailHeder(
+              model: "كامري",
               make: "تويوتا",
               year: 2023,
               carPrice: 45000,
@@ -63,11 +63,10 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
           SizedBox(
             height: 5,
           ),
-          CustomCarDetailCard(
+          UsedCarDetailCard(
               model: "كامري",
-              manufacturer: "تويوتا",
+              make: "تويوتا",
               year: 2023,
-              color: "ازرق",
               mileage: 45000,
               isManualGear: false),
           SizedBox(
@@ -81,7 +80,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
           SizedBox(
             height: 5,
           ),
-          CustomCarDesc(desc: "مفحوصة ومجددة فل كامل"),
+          CarDesc(desc: "مفحوصة ومجددة فل كامل"),
           SizedBox(
             height: 20,
           ),
@@ -100,7 +99,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               scrollDirection: Axis.horizontal,
               children: [
                 CustomVerticalCarCard(
-                     model: "كامري",
+                    model: "كامري",
                     make: "تويوتا",
                     year: 2020,
                     seller: "mohammed",
@@ -114,7 +113,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                   width: 20,
                 ),
                 CustomVerticalCarCard(
-                     model: "كامري",
+                    model: "كامري",
                     make: "تويوتا",
                     year: 2020,
                     seller: "mohammed",
@@ -128,7 +127,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                   width: 20,
                 ),
                 CustomVerticalCarCard(
-                     model: "كامري",
+                    model: "كامري",
                     make: "تويوتا",
                     year: 2020,
                     seller: "mohammed",
@@ -150,6 +149,5 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
         ],
       ),
     );
-    ;
   }
 }

@@ -131,12 +131,16 @@ class CustomNumberTextFormField extends StatefulWidget {
   final TextEditingController myController;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final double? numLimit;
+  final String? errorLimitText;
   const CustomNumberTextFormField(
       {super.key,
       required this.hint,
       required this.myController,
       this.suffixIcon,
-      this.prefixIcon});
+      this.prefixIcon,
+      this.numLimit,
+      this.errorLimitText});
 
   @override
   State<CustomNumberTextFormField> createState() =>
@@ -159,6 +163,11 @@ class _CustomNumberTextFormFieldState extends State<CustomNumberTextFormField> {
           final n = num.tryParse(value!);
           if (n == null) {
             return 'رقم غير صالح';
+          }
+          if (widget.numLimit != null) {
+            if (double.parse(value) < widget.numLimit!) {
+              return widget.errorLimitText;
+            }
           }
           return null;
         },

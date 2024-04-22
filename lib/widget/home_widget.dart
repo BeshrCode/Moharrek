@@ -1,6 +1,9 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:moharrek/components/button.dart';
-import 'package:moharrek/pages/home/car_details_page.dart';
+import 'package:moharrek/pages/home/new_car_details_page.dart';
+import 'package:moharrek/pages/home/used_car_details_page.dart';
 
 class CarPrimarySpecific extends StatelessWidget {
   final String text;
@@ -20,8 +23,8 @@ class CarPrimarySpecific extends StatelessWidget {
       children: [
         Image.asset(
           image,
-          width: imageHeight ?? 30,
-          height: imageWidth ?? 30,
+          width: imageHeight ?? 25,
+          height: imageWidth ?? 25,
         ),
         SizedBox(
           height: 5,
@@ -38,24 +41,22 @@ class CarPrimarySpecific extends StatelessWidget {
   }
 }
 
-class CustomCarCard extends StatefulWidget {
+class CustomUsedCarCard extends StatefulWidget {
   final String model;
   final String make;
   final int year;
   final String seller;
-  final bool isNew;
   final double price;
   final String location;
   final int mileage;
   final String uploadDate;
   final String image;
-  const CustomCarCard(
+  const CustomUsedCarCard(
       {super.key,
       required this.model,
       required this.make,
       required this.year,
       required this.seller,
-      required this.isNew,
       required this.price,
       required this.location,
       required this.mileage,
@@ -63,22 +64,24 @@ class CustomCarCard extends StatefulWidget {
       required this.image});
 
   @override
-  State<CustomCarCard> createState() => _CustomCarCardState();
+  State<CustomUsedCarCard> createState() => _CustomUsedCarCardState();
 }
 
-class _CustomCarCardState extends State<CustomCarCard> {
+class _CustomUsedCarCardState extends State<CustomUsedCarCard> {
+  var formatter = NumberFormat();
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => CarDetailsPage()));
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => UsedCarDetailsPage()));
       },
       child: Container(
           height: 140,
           // color: Colors.grey[200],
           decoration: BoxDecoration(
-              color: Colors.blue[100],
+              color: Colors.white,
+              border: Border.all(width: 1, color: Colors.blue),
               // shape: BoxShape.circle,
               borderRadius: BorderRadius.circular(10)),
           child: Row(
@@ -101,45 +104,20 @@ class _CustomCarCardState extends State<CustomCarCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
+                        alignment: Alignment.centerRight,
                         margin: EdgeInsets.only(right: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${widget.make} ${widget.model}",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Rubik",
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Container(
-                                  width: 50,
-                                  height: 18,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.black, width: 1),
-                                      borderRadius: BorderRadius.circular(7)),
-                                  child: Center(
-                                    child: widget.isNew
-                                        ? Text("جديد",
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontFamily: "Rubik",
-                                                fontWeight: FontWeight.bold))
-                                        : Text("مستعمل",
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontFamily: "Rubik",
-                                                fontWeight: FontWeight.bold)),
-                                  ),
-                                )
-                              ],
+                            Text(
+                              "${widget.make} ${widget.model}",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: "Rubik",
+                                  fontWeight: FontWeight.w500),
                             ),
                             SizedBox(
-                              height: 5,
+                              height: 10,
                             ),
                             Text(
                               " سنة الصنع: ${widget.year}",
@@ -165,7 +143,7 @@ class _CustomCarCardState extends State<CustomCarCard> {
                           children: [
                             CarPrimarySpecific(
                               image: "images/car_card/dollar.png",
-                              text: "${widget.price}",
+                              text: "${formatter.format(widget.price)}",
                             ),
                             CarPrimarySpecific(
                               image: "images/car_card/location.png",
@@ -189,6 +167,108 @@ class _CustomCarCardState extends State<CustomCarCard> {
             ],
           )),
     );
+  }
+}
+
+class CustomNewCarCard extends StatefulWidget {
+  final String model;
+  final String make;
+  final int year;
+  final double price;
+  final String location;
+  final String image;
+  const CustomNewCarCard(
+      {super.key,
+      required this.model,
+      required this.make,
+      required this.year,
+      required this.price,
+      required this.location,
+      required this.image});
+
+  @override
+  State<CustomNewCarCard> createState() => _CustomNewCarCardState();
+}
+
+class _CustomNewCarCardState extends State<CustomNewCarCard> {
+  var formatter = NumberFormat('#,##,000');
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => NewCarDetailsPage()));
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 35),
+          // height: 120,
+          // width: 210,
+          decoration: BoxDecoration(
+              border: Border.all(width: 1, color: Colors.black),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20)),
+          child: Column(children: [
+            Container(
+              margin: EdgeInsets.only(
+                top: 15,
+                left: 10,
+                right: 10,
+              ),
+              // alignment: Alignment.topCenter,
+              color: Colors.white,
+              height: 150,
+              width: 200,
+              child: Image.asset(
+                widget.image,
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              "${widget.make} ${widget.model} ${widget.year}",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              " ${formatter.format(widget.price)} ر.س",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 17, 138, 17),
+                  // fontFamily: "Rubik",
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.location_pin),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  "${widget.location}",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: "Rubik",
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            )
+          ]),
+        ));
   }
 }
 
@@ -272,7 +352,24 @@ class _MyListingCarCardState extends State<MyListingCarCard> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.warning,
+                              animType: AnimType.rightSlide,
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              title: 'حذف',
+                              desc: "هل أنت متأكد من حذف هذا الإعلان؟",
+                              titleTextStyle: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                              descTextStyle: TextStyle(fontSize: 14),
+                              btnOkColor: Colors.blue,
+                              btnOkText: "استمرار",
+                              btnCancelText: "إالغاء",
+                              btnOkOnPress: () {},
+                              btnCancelOnPress: () {},
+                            ).show();
+                          },
                           icon: Icon(Icons.delete),
                         )
                       ],
@@ -441,7 +538,7 @@ class _CustomVerticalCarCardState extends State<CustomVerticalCarCard> {
   }
 }
 
-class CustomCarDetailHeder extends StatefulWidget {
+class UsedCarDetailHeder extends StatefulWidget {
   final String model;
   final String make;
   final int year;
@@ -449,7 +546,7 @@ class CustomCarDetailHeder extends StatefulWidget {
   final String carLocation;
   final String uploadDate;
   final List<Widget> carImage;
-  const CustomCarDetailHeder(
+  const UsedCarDetailHeder(
       {super.key,
       required this.model,
       required this.make,
@@ -460,10 +557,10 @@ class CustomCarDetailHeder extends StatefulWidget {
       required this.carImage});
 
   @override
-  State<CustomCarDetailHeder> createState() => _CustomCarDetailHederState();
+  State<UsedCarDetailHeder> createState() => _UsedCarDetailHederState();
 }
 
-class _CustomCarDetailHederState extends State<CustomCarDetailHeder> {
+class _UsedCarDetailHederState extends State<UsedCarDetailHeder> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -576,34 +673,135 @@ class _CustomCarDetailHederState extends State<CustomCarDetailHeder> {
   }
 }
 
-class CustomCarDetailCard extends StatefulWidget {
+class NewCarDetailHeder extends StatefulWidget {
   final String model;
-  final String manufacturer;
+  final String make;
   final int year;
-  final String color;
-  final int mileage;
-  final bool isManualGear;
-  // final String
-
-  const CustomCarDetailCard(
+  final double carPrice;
+  final String carLocation;
+  final List<Widget> carImage;
+  const NewCarDetailHeder(
       {super.key,
       required this.model,
-      required this.manufacturer,
+      required this.make,
       required this.year,
-      required this.color,
+      required this.carPrice,
+      required this.carLocation,
+      required this.carImage});
+
+  @override
+  State<NewCarDetailHeder> createState() => _NewCarDetailHederState();
+}
+
+class _NewCarDetailHederState extends State<NewCarDetailHeder> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(15),
+        height: 370,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(width: 1, color: Colors.blue),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 200,
+              child: Column(
+                children: [
+                  Container(
+                    height: 180,
+                    child: PageView.builder(
+                      scrollDirection: Axis.horizontal,
+                      // reverse: true,
+                      onPageChanged: (value) {
+                        setState(() {});
+                      },
+                      itemCount: widget.carImage.length,
+                      itemBuilder: (context, index) {
+                        return widget.carImage[index];
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    "لرؤية المزيد من الصور اسحب لليمين",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                        fontFamily: "Rubik",
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                Text(
+                  "${widget.make} ${widget.model} ${widget.year}",
+                  style: TextStyle(
+                      fontSize: 26,
+                      fontFamily: "Rubik",
+                      fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  "${widget.carPrice} ريال سعودي",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Rubik",
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.location_pin),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  "${widget.carLocation}",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Rubik",
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            )
+          ],
+        ));
+  }
+}
+
+class UsedCarDetailCard extends StatefulWidget {
+  final String model;
+  final String make;
+  final int year;
+  final int mileage;
+  final bool isManualGear;
+
+  const UsedCarDetailCard(
+      {super.key,
+      required this.model,
+      required this.make,
+      required this.year,
       required this.mileage,
       required this.isManualGear});
 
   @override
-  State<CustomCarDetailCard> createState() => _CustomCarDetailCardState();
+  State<UsedCarDetailCard> createState() => _UsedCarDetailCardState();
 }
 
-class _CustomCarDetailCardState extends State<CustomCarDetailCard> {
+class _UsedCarDetailCardState extends State<UsedCarDetailCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-      height: 370,
+      height: 350,
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.blue),
         borderRadius: BorderRadius.circular(30),
@@ -641,7 +839,7 @@ class _CustomCarDetailCardState extends State<CustomCarDetailCard> {
                   fontWeight: FontWeight.w500),
             ),
             Text(
-              "${widget.manufacturer}",
+              "${widget.make}",
               style: TextStyle(
                   fontSize: 18,
                   fontFamily: "Rubik",
@@ -661,25 +859,6 @@ class _CustomCarDetailCardState extends State<CustomCarDetailCard> {
             ),
             Text(
               "${widget.year}",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: "Rubik",
-                  fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "اللون",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: "Rubik",
-                  fontWeight: FontWeight.w500),
-            ),
-            Text(
-              "${widget.color}",
               style: TextStyle(
                   fontSize: 18,
                   fontFamily: "Rubik",
@@ -747,9 +926,136 @@ class _CustomCarDetailCardState extends State<CustomCarDetailCard> {
   }
 }
 
-class CustomCarDesc extends StatelessWidget {
+class NewCarDetailCard extends StatefulWidget {
+  final String model;
+  final String make;
+  final int year;
+  final bool isManualGear;
+  const NewCarDetailCard(
+      {super.key,
+      required this.model,
+      required this.make,
+      required this.year,
+      required this.isManualGear});
+
+  @override
+  State<NewCarDetailCard> createState() => _NewCarDetailCardState();
+}
+
+class _NewCarDetailCardState extends State<NewCarDetailCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
+      height: 300,
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.blue),
+        borderRadius: BorderRadius.circular(30),
+        // color: Colors.grey[300]
+      ),
+      child:
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "الطراز",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+            Text(
+              "${widget.model}",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "الشركة المصنعة",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+            Text(
+              "${widget.make}",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "سنة التصنيع",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+            Text(
+              "${widget.year}",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "القير",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+            Text(
+              widget.isManualGear ? "عادي" : "اوتوماتيك",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "وثيقة الفحص الدوري",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Rubik",
+                  fontWeight: FontWeight.w500),
+            ),
+            IconButton(
+              onPressed: () {},
+              color: Colors.blue,
+              icon: Icon(Icons.file_open_outlined),
+            )
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
+class CarDesc extends StatelessWidget {
   final String desc;
-  const CustomCarDesc({super.key, required this.desc});
+  const CarDesc({super.key, required this.desc});
 
   @override
   Widget build(BuildContext context) {

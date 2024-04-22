@@ -2,6 +2,7 @@
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:moharrek/widget/auction_widget.dart';
 import 'package:moharrek/components/button.dart';
 import 'package:moharrek/components/text_form_field.dart';
@@ -15,8 +16,8 @@ class AuctionCarDetailPage extends StatefulWidget {
 
 class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
   GlobalKey<FormState> fState = GlobalKey();
-
   TextEditingController bidAmount = TextEditingController();
+  var formatter = NumberFormat();
 
   List<Widget> carImage = [
     Image.asset("images/car_card/blue_car.jpg"),
@@ -73,7 +74,9 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
     },
   ];
 
-  Future openDialog() {
+  double bidLimit = 100000;
+
+  Future openDialog(double bidLimit) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -82,16 +85,20 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
             child: AlertDialog(
               title: Text("أدخل مبلغ المزايدة"),
               content: CustomNumberTextFormField(
-                  hint: "أدخل المبلغ",
-                  suffixIcon: Container(
-                      padding: EdgeInsets.all(10), child: Text("ر.س")),
-                  myController: bidAmount),
+                hint: "أدخل المبلغ",
+                suffixIcon:
+                    Container(padding: EdgeInsets.all(10), child: Text("ر.س")),
+                myController: bidAmount,
+                numLimit: bidLimit,
+                errorLimitText: "المبلغ أقل من ${formatter.format(bidLimit)}",
+              ),
               actions: [
                 TextButton(
                     onPressed: () {
                       if (!fState.currentState!.validate()) {
                         return;
                       }
+
                       AwesomeDialog(
                           context: context,
                           dialogType: DialogType.warning,
@@ -107,7 +114,24 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
                           btnOkText: "استمرار",
                           btnCancelText: "إالغاء",
                           btnOkOnPress: () {
-                            Navigator.of(context).pop();
+                            AwesomeDialog(
+                              context: context,
+                              dismissOnTouchOutside: false,
+                              dialogType: DialogType.success,
+                              animType: AnimType.rightSlide,
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              title: 'تم الاشتراك',
+                              desc: "تم إضافة مبلغ المزايدة بنجاح",
+                              titleTextStyle: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                              descTextStyle: TextStyle(fontSize: 14),
+                              btnOkColor: Colors.blue,
+                              btnOkText: "استمرار",
+                              btnOkOnPress: () {
+                                Navigator.of(context).pop();
+                              },
+                            ).show();
+                            // Navigator.of(context).pop();
                           },
                           btnCancelOnPress: () {
                             Navigator.of(context).pop();
@@ -142,6 +166,7 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
             CustomAuctionInfoCard(
               higherBid: 320000,
               endDate: "07 شوال",
+              bidLimit: bidLimit,
             ),
             SizedBox(height: 10),
             AuctionBidders(bidders: bidders),
@@ -153,7 +178,7 @@ class _AuctionCarDetailPageState extends State<AuctionCarDetailPage> {
                   color: Colors.blue,
                   height: 5,
                   onPressed: () {
-                    openDialog();
+                    openDialog(bidLimit);
                   },
                   isLoading: false),
             )
@@ -176,6 +201,7 @@ class AuctionBidders extends StatefulWidget {
 
 class _AuctionBiddersState extends State<AuctionBidders> {
   int count = 0;
+  var formatter = NumberFormat();
 
   @override
   Widget build(BuildContext context) {
@@ -234,12 +260,14 @@ class _AuctionBiddersState extends State<AuctionBidders> {
                       ],
                     ),
                     count == 1
-                        ? Text("${widget.bidders[index]["bid"]} ر.س",
+                        ? Text(
+                            "${formatter.format(widget.bidders[index]["bid"])} ر.س",
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orange))
-                        : Text("${widget.bidders[index]["bid"]} ر.س",
+                        : Text(
+                            "${formatter.format(widget.bidders[index]["bid"])} ر.س",
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
