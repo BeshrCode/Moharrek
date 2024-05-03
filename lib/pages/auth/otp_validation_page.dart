@@ -1,42 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/auth/username_page.dart';
+import 'package:get/get.dart';
+import 'package:moharrek/pages/auth/controller/auth_controller.dart';
+import 'package:logger/logger.dart';
 import 'package:pinput/pinput.dart';
 
-class OTPValidationPage extends StatefulWidget {
-  const OTPValidationPage({super.key});
+class OTPValidationPage extends GetWidget<AuthController> {
+  OTPValidationPage({super.key});
 
-  @override
-  State<OTPValidationPage> createState() => _OTPValidationPageState();
-}
-
-class _OTPValidationPageState extends State<OTPValidationPage> {
+  String number = Get.arguments;
   @override
   Widget build(BuildContext context) {
+    controller.signInWithPhoneNumber(number);
     return Scaffold(
       appBar: AppBar(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                // color: Colors.grey,
-                child: Column(
+          child: SingleChildScrollView(
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
                   children: [
-                    Container(
+                    SizedBox(
                       height: 200,
                       width: 200,
                       child: Image.asset("images/otp_val.png"),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Text(
                       "رمز التفعيل",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Text(
@@ -46,7 +44,7 @@ class _OTPValidationPageState extends State<OTPValidationPage> {
                           color: Colors.grey[500],
                           fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Directionality(
@@ -54,23 +52,29 @@ class _OTPValidationPageState extends State<OTPValidationPage> {
                       child: Pinput(
                         length: 6,
                         showCursor: true,
-                        onCompleted: (value) => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => UsernamePage())),
+                        onCompleted: (value)async =>
+                        {
+
+                          // await FirebaseAuthentication().authenticate(controller.temp,controller.otpController.text)
+                          await controller.checkOTP(value)
+                          //here shold check from otp and when ok go to UserNamePage
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => const UsernamePage()))
+                        },
                         defaultPinTheme: PinTheme(
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.blue)),
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     )
                   ],
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -1,9 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/bottom_nav_bar.dart';
-import 'package:moharrek/pages/auth/register_page.dart';
-import 'package:moharrek/pages/home/home_page.dart';
+import 'package:moharrek/app_pages.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:moharrek/pages/home/controller/carController.dart';
+import 'package:moharrek/shared_pref.dart';
+import 'firebase_options.dart';
+import 'package:get/get.dart';
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Preference.shared.instance();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-void main() {
+
+  CarController().removeAuctionFromCar('carId7', 'participantId70');
   runApp(const MyApp());
 }
 
@@ -13,7 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       builder: (context, child) {
         return Directionality(textDirection: TextDirection.rtl, child: child!);
       },
@@ -22,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           fontFamily: "NotoKufiArabic",
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             bodySmall: TextStyle(
               fontFamily: "NotoKufiArabic",
               fontSize: 14,
@@ -42,11 +53,22 @@ class MyApp extends StatelessWidget {
                 fontSize: 36,
                 fontWeight: FontWeight.bold),
           )),
-      home: Directionality(
-        textDirection: TextDirection.rtl,
-        child: RegisterPage(),
-      ),
+      initialRoute: FirebaseAuth.instance.currentUser!=null?checkUserName():AppPages.registerPage,
+      // home: const Directionality(
+      //   textDirection: TextDirection.rtl,
+      //   child: RegisterPage(),
+      // ),
+      getPages: AppPages.appPages,
     );
+  }
+  checkUserName(){
+    if(Preference.shared.getUserId()!.isEmpty){
+      return AppPages.registerPage;
+    }else if(Preference.shared.getUserName()!.isNotEmpty){
+      return AppPages.homePage;
+    }else{
+      return AppPages.userName;
+    }
   }
 }
 

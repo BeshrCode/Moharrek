@@ -1,51 +1,25 @@
-import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:moharrek/pages/auth/otp_validation_page.dart';
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+import 'package:moharrek/app_pages.dart';
+import 'package:moharrek/pages/auth/controller/auth_controller.dart';
 import 'package:moharrek/components/auth_button.dart';
 import 'package:moharrek/components/text_form_field.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends GetWidget<AuthController> {
   const RegisterPage({super.key});
 
-  @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
 
-class _RegisterPageState extends State<RegisterPage> {
-  late TextEditingController phoneNumber = TextEditingController();
-  // late TextEditingController password = TextEditingController();
 
-  Country country = Country(
-      phoneCode: "996",
-      countryCode: "SA",
-      e164Sc: 0,
-      geographic: true,
-      level: 1,
-      name: "Saudi",
-      example: "Saudi",
-      displayName: "Saudi",
-      displayNameNoCountryCode: "SA",
-      e164Key: "");
-
-  bool isLaoding = false;
-  GlobalKey<FormState> formState = GlobalKey();
-  
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    phoneNumber.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Form(
-        key: formState,
+        key: controller.formState,
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           children: [
             Container(
               height: 200,
@@ -71,12 +45,12 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             CustomePhoneNumberTextFormField(
               hint: "5xxxxxxxx",
-              myController: phoneNumber,
+              myController: controller.phoneNumberController,
               suffixIcon: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Text(
-                    "${country.flagEmoji} +${country.phoneCode}",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    "${controller.country.flagEmoji} +${controller.country.phoneCode}",
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   )),
             ),
             const SizedBox(
@@ -85,12 +59,10 @@ class _RegisterPageState extends State<RegisterPage> {
             CustomeAuthButton(
                 text: "متابعة",
                 color: Colors.blue,
-                isLoading: isLaoding,
-                onPressed: () {
-                  if (formState.currentState!.validate()) {
-                    print("============ yes");
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => OTPValidationPage()));
+                isLoading: controller.isLoading.value,
+                onPressed: ()async {
+                  if (controller.formState.currentState!.validate()) {
+                    Get.toNamed(AppPages.otpPage,arguments: controller.phoneNumberController.text);
                   }
                 }),
           ],

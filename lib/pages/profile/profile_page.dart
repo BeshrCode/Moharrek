@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:moharrek/app_pages.dart';
+import 'package:moharrek/pages/auth/controller/auth_controller.dart';
 import 'package:moharrek/pages/profile/my_listing.dart';
+import 'package:moharrek/shared_pref.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends GetWidget<AuthController> {
   const ProfilePage({super.key});
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         // appBar: AppBar(
@@ -27,80 +25,146 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: Colors.grey[200],
                     border: Border.all(width: 2, color: Colors.blue),
                     borderRadius: BorderRadius.circular(60)),
-                child: Icon(
+                child: const Icon(
                   Icons.person,
                   size: 40,
                   color: Colors.blue,
                 )),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Center(
-            child: Text("Mohammed",
-                style: Theme.of(context).textTheme.titleMedium),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            height: 2,
-            color: Colors.grey[300],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MyListingPage()));
-            },
-            child: Row(
-              children: [
-                Icon(Icons.cases_rounded),
-                SizedBox(
-                  width: 10,
-                ),
-                Text("إعلاناتي",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ],
+            child: StreamBuilder(
+              builder: (context, snapshot) {
+                return  snapshot.hasData?Column(
+                  children: [
+                    Text(snapshot.data!.userName, style: Theme.of(context).textTheme.titleMedium),
+                     const SizedBox(height: 10,),
+                    Text(snapshot.data!.admin?'أدمن':'مستخدم', style: Theme.of(context).textTheme.titleMedium),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: 2,
+                      color: Colors.grey[300],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => const MyListingPage()));
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.cases_rounded),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("إعلاناتي",
+                              style:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+
+                    Visibility(
+                      visible: snapshot.data!.admin,
+                      child: Column(children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.toNamed(AppPages.unAvailableCarsPage);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(Icons.local_offer),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("عروض المزايدة",
+                                  style:
+                                  TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ],),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Visibility(
+                      visible: snapshot.data!.admin,
+                      child: Column(children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.toNamed(AppPages.unAvailableCarsPage);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(Icons.local_offer),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("عروض المزايدة",
+                                  style:
+                                  TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ],),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: const Row(
+                        children: [
+                          Icon(Icons.settings),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("الاعدادات",
+                              style:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    InkWell(
+                      onTap: ()async {
+                        await controller.signOut();
+                        Get.offAllNamed(AppPages.registerPage);
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.logout_rounded),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("تسجيل الخروج",
+                              style:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ):const Center(child: CircularProgressIndicator());
+              }, stream: controller.getUserDataStream(),
             ),
           ),
-          SizedBox(
-            height: 15,
-          ),
-          InkWell(
-            onTap: () {},
-            child: Row(
-              children: [
-                Icon(Icons.settings),
-                SizedBox(
-                  width: 10,
-                ),
-                Text("الاعدادات",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          InkWell(
-            onTap: () {},
-            child: Row(
-              children: [
-                Icon(Icons.logout_rounded),
-                SizedBox(
-                  width: 10,
-                ),
-                Text("تسجيل الخروج",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
+
         ],
       ),
     ));

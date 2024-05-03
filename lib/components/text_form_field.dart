@@ -18,45 +18,77 @@ class CustomeTextFormField extends StatelessWidget {
         }
       },
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           hintText: hint,
           hintStyle: TextStyle(
               color: Colors.grey[500],
               fontSize: 16,
               fontWeight: FontWeight.normal),
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)))),
     );
   }
 }
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String hint;
-  CustomTextField({super.key, required this.hint});
+  final int maxLines;
+  final bool isValidate;
+  final bool isEnable;
+  final TextInputType inputType;
+  final int maxLength;
+  final TextEditingController controller; // Added for state management
+
+  const CustomTextField({super.key, required this.hint, required this.controller, required this.maxLines, required this.maxLength, required this.inputType, required this.isValidate, required this.isEnable});
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+   // Use controller inside State
+
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      maxLines: 3,
-      maxLength: 100,
+    return TextFormField(
+      validator: (value) {
+        if(value!.isEmpty && widget.isValidate){
+          return 'حقل أجباري';
+        }
+      },
+      maxLines: widget.maxLines,
+      maxLength: widget.maxLength,
+      enabled: widget.isEnable,
       cursorColor: Colors.blue,
+      keyboardType: widget.inputType,
+      controller: widget.controller, // Use the stateful controller
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          hintText: hint,
-          hintStyle: TextStyle(
-              color: Colors.grey[500],
-              fontSize: 16,
-              fontWeight: FontWeight.normal),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)))),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        hintText: widget.hint,
+        hintStyle: const TextStyle(
+          color: Colors.grey,
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+        ),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
     );
   }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   widget.controller.dispose();
+  //   super.dispose();
+  // }
 }
 
 class CustomePhoneNumberTextFormField extends StatefulWidget {
@@ -74,8 +106,15 @@ class CustomePhoneNumberTextFormField extends StatefulWidget {
       _CustomePhoneNumberTextFormFieldState();
 }
 
+
 class _CustomePhoneNumberTextFormFieldState
     extends State<CustomePhoneNumberTextFormField> {
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.myController.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -97,16 +136,16 @@ class _CustomePhoneNumberTextFormFieldState
           }
         },
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             hintText: widget.hint,
             hintStyle: TextStyle(
                 color: Colors.grey[500],
                 fontSize: 18,
                 fontWeight: FontWeight.normal),
-            border: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             suffixIcon: widget.suffixIcon,
             prefix: widget.myController.text.length == 9
@@ -114,9 +153,9 @@ class _CustomePhoneNumberTextFormFieldState
                     // padding: EdgeInsets.all(10),
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.green),
-                    child: Icon(
+                    child: const Icon(
                       Icons.done,
                       color: Colors.white,
                       size: 15,
@@ -174,17 +213,17 @@ class _CustomNumberTextFormFieldState extends State<CustomNumberTextFormField> {
         decoration: InputDecoration(
           suffixIcon: widget.suffixIcon ?? null,
           prefixIcon: widget.prefixIcon ?? null,
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           hintText: widget.hint,
           hintStyle: TextStyle(
               color: Colors.grey[500],
               fontSize: 14,
               fontWeight: FontWeight.normal),
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.blue),
             borderRadius: BorderRadius.all(Radius.circular(40)),
           ),
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.blue),
               borderRadius: BorderRadius.all(Radius.circular(40))),
           // suffixIcon: widget.suffixIcon,

@@ -1,21 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:moharrek/components/button.dart';
+import 'package:moharrek/pages/home/controller/carController.dart';
+import 'package:moharrek/pages/home/model/car.dart';
 import 'package:moharrek/widget/home_widget.dart';
 
-class NewCarDetailsPage extends StatefulWidget {
-  const NewCarDetailsPage({super.key});
+class NewCarDetailsPage extends GetWidget<CarController> {
+   NewCarDetailsPage({super.key});
 
-  @override
-  State<NewCarDetailsPage> createState() => _NewCarDetailsPageState();
-}
+  Car car = Get.arguments;
 
-class _NewCarDetailsPageState extends State<NewCarDetailsPage> {
-  int imageNum = 0;
-  List<Widget> carImage = [
-    Image.asset("images/car_card/blue_car.jpg"),
-    Image.asset("images/car_2.jpg"),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,110 +21,89 @@ class _NewCarDetailsPageState extends State<NewCarDetailsPage> {
           // title: Text('Title'),
           ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         children: [
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           NewCarDetailHeder(
-              model: "كامري",
-              make: "تويوتا",
-              year: 2023,
-              carPrice: 45000,
-              carLocation: "مكة المكرمة",
-              carImage: carImage),
-          SizedBox(
+              model: car.model,
+              make: car.make,
+              year: car.year,
+              carPrice: car.price,
+              carLocation: car.location,
+              carImage: List<Widget>.generate(car.images.length, (index) => CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl:car.images[index],
+                placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ))),
+          const SizedBox(
             height: 20,
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 50),
+            margin: const EdgeInsets.symmetric(horizontal: 50),
             child: CustomeButtonIcon(
               text: "تواصل مع المعرض",
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () {},
+              onPressed: () {
+                controller.makePhoneCall(car.sellerPhone);
+              },
               isLoading: false,
               width: 30,
               icon: Icons.call,
               iconColor: Colors.white,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Text(
+          const Text(
             "خصائص السيارة",
             style: TextStyle(
                 fontSize: 22, fontFamily: "Rubik", fontWeight: FontWeight.w500),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
-          NewCarDetailCard(
-              model: "كامري", make: "تويوتا", year: 2023, isManualGear: false),
-          SizedBox(
+           NewCarDetailCard(
+              model: car.model, make: car.make, year: car.year, isManualGear: car.transmissionType=='أوتوماتيك'?false:true),
+          const SizedBox(
             height: 20,
           ),
-          Text(
+          const Text(
             "مقترحة",
             style: TextStyle(
                 fontSize: 22, fontFamily: "Rubik", fontWeight: FontWeight.w500),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Container(
             height: 290,
-            child: ListView(
-              // shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: [
-                CustomVerticalCarCard(
-                    model: "كامري",
-                    make: "تويوتا",
-                    year: 2020,
-                    seller: "mohammed",
-                    isNew: false,
-                    price: 23000,
-                    location: "مكة",
-                    mileage: 45000,
-                    uploadDate: "3 ايام",
-                    image: "images/car_card/blue_car.jpg"),
-                SizedBox(
-                  width: 20,
-                ),
-                CustomVerticalCarCard(
-                    model: "كامري",
-                    make: "تويوتا",
-                    year: 2020,
-                    seller: "mohammed",
-                    isNew: false,
-                    price: 23000,
-                    location: "مكة",
-                    mileage: 45000,
-                    uploadDate: "3 ايام",
-                    image: "images/car_2.jpg"),
-                SizedBox(
-                  width: 20,
-                ),
-                CustomVerticalCarCard(
-                    model: "كامري",
-                    make: "تويوتا",
-                    year: 2020,
-                    seller: "mohammed",
-                    isNew: false,
-                    price: 23000,
-                    location: "مكة",
-                    mileage: 45000,
-                    uploadDate: "3 ايام",
-                    image: "images/car_card/blue_car.jpg"),
-                SizedBox(
-                  width: 10,
-                ),
-              ],
+            child:
+            StreamBuilder<List<Car>>(
+              stream: controller.getCarsByType(car.type),
+              builder: (context, snapshot) {
+                return snapshot.hasData? ListView.separated(
+                  itemCount: snapshot.data!.length,
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      width: 20,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+
+                   return CustomVerticalCarCard(car: snapshot.data![index],);
+                  },
+                  // shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                ):const Center(child: CircularProgressIndicator());
+              }
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
         ],

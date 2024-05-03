@@ -1,30 +1,24 @@
-// import 'dart:math';
-
-import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:moharrek/components/text_form_field.dart';
 import 'package:moharrek/components/dropdown_menu_button.dart';
 import 'package:moharrek/components/year_picker.dart';
+import 'package:moharrek/pages/home/controller/carController.dart';
+import 'package:moharrek/shared_pref.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:uuid/uuid.dart';
+import '../../components/cites_menu.dart';
+import '../home/model/car.dart';
 
-class AddCarPage extends StatefulWidget {
-  const AddCarPage({super.key});
+class AddCarPage extends GetWidget<CarController> {
 
-  @override
-  State<AddCarPage> createState() => _AddCarPageState();
-}
-
-class _AddCarPageState extends State<AddCarPage> {
   String model = "";
-  String? manufacturer;
-  bool isManufacturerSelected = false;
-  int year = 0;
+  int year = 2024;
   TextEditingController mileage = TextEditingController();
   List<String> manufacturers = [
     "Toyota",
@@ -39,257 +33,320 @@ class _AddCarPageState extends State<AddCarPage> {
     "Ford": ['Ford F-150', 'Ford Mustang', 'Ford Explorer', 'Ford Escape'],
     "BMW": ['BMW 3 Series', 'BMW 5 Series', 'BMW X5', 'BMW i8']
   };
+  final transmissionTypes = ['Automatic', 'Manual'];
 
-  String? selectedManufacturer;
+  String transmissionType = 'أوتوماتيك';
+
   String? selectedModel;
-  List<File> imageList = [];
-  File? periodicInspection;
-
-  addPDFFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: false,
-      allowedExtensions: ['pdf'],
-    );
-
-    if (result != null) {
-      periodicInspection = File(result.files.single.path!);
-    } else {
-      // User canceled the picker
-    }
-    setState(() {});
-  }
-
-  addImage() async {
-    final ImagePicker picker = ImagePicker();
-    // Pick multiple images.
-    final List<XFile>? images = await picker.pickMultiImage();
-
-    if (images != null) {
-      // Convert selected images to File objects and store them in the imageList.
-      imageList = images.map((image) => File(image.path)).toList();
-      setState(() {});
-    }
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    mileage.dispose();
-  }
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey();
+
+  final Type type = Get.arguments;
+
+  AddCarPage({super.key});
+
+  String getCarType(){
+    if(type == Type.USED){
+      return 'مستخدمة';
+    }
+    if(type == Type.AUCTION){
+      return 'مزايدة';
+    }
+    if(type == Type.NEW){
+      return 'وكالة';
+    }
+
+    return '';
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "أضف مركبة",
+        title:  Text(
+          "أضف مركبة (${getCarType()})",
           style: TextStyle(fontSize: 24),
         ),
       ),
       body: Form(
         key: formKey,
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           children: [
             CustomDropdownMenuButton(
                 hint: "اختر الشركة",
                 hintSearch: "ابحث عن الشركة...",
                 list: manufacturers,
-                selectedValue: selectedManufacturer,
+                selectedValue: controller.selectedManufacturer!.value,
                 onChanged: (value) {
-                  selectedManufacturer = value;
+                  controller.selectedManufacturer!.value = value;
                   selectedModel = null;
-                  setState(() {});
+                  // setState(() {});
                 }),
-            SizedBox(height: 20),
-            CustomDropdownMenuButton(
-                hint: "اختر المودل",
-                hintSearch: "ابحث عن المودل...",
-                list: models[selectedManufacturer] ?? ["empty"],
-                selectedValue: selectedModel,
-                onChanged: (value) {
-                  selectedModel = value;
-                  setState(() {});
-                }),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            Obx(() {
+              return CustomDropdownMenuButton(
+                  hint: "اختر المودل",
+                  hintSearch: "ابحث عن المودل...",
+                  list: models[controller.selectedManufacturer!.value] ?? ["Toyota"],
+                  selectedValue: selectedModel,
+                  onChanged: (value) {
+                    selectedModel = value;
+                    // setState(() {});
+                  });
+            }),
+            const SizedBox(height: 20),
             // Text("اختر سنة التصنيع"),
             CustomYearPicker(selectedYear: (value) {
               year = value;
-              print(year);
             }),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
 
             CustomNumberTextFormField(
                 hint: "أدخل مقدار الممشى...",
                 prefixIcon:
-                    Container(padding: EdgeInsets.all(13), child: Text("km")),
+                Container(
+                    padding: const EdgeInsets.all(13), child: const Text("km")),
                 myController: mileage),
-            SizedBox(height: 20),
-            Text("حدد نظام القير"),
-            SizedBox(height: 5),
+            const SizedBox(height: 20),
+            const Text("حدد نظام القير"),
+            const SizedBox(height: 5),
             ToggleSwitch(
               initialLabelIndex: 0,
               animate: true,
               animationDuration: 400,
               curve: Easing.legacy,
               minWidth: double.infinity,
-              customWidths: [double.infinity, double.infinity],
+              customWidths: const [double.infinity, double.infinity],
               dividerColor: Colors.white,
               inactiveBgColor: Colors.white,
-              borderColor: [Colors.blue],
+              borderColor: const [Colors.blue],
               borderWidth: 1,
               cornerRadius: 0,
               totalSwitches: 2,
-              activeBgColor: [Colors.blue],
+              activeBgColor: const [Colors.blue],
               labels: ['أوتوماتيك', 'عادي'],
               onToggle: (index) {
-                print('switched to: $index');
+                transmissionType = transmissionTypes[index!];
               },
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
 
             InkWell(
               onTap: () {
-                addImage();
+                controller.addImage();
               },
               child: DottedBorder(
                 color: Colors.blue,
                 strokeWidth: 1,
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: imageList.isEmpty
-                          ? Colors.grey[200]
-                          : Colors.blue[200],
-                    ),
-                    height: 100,
-                    width: double.infinity,
-                    child: imageList.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.image_outlined,
-                                size: 25,
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                "ارفع صورة أو أكثر للمركبة",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ],
-                          )
-                        : ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: imageList.length,
-                            itemBuilder: (context, index) {
-                              return Image.file(
-                                imageList[index],
-                                height: 100,
-                                width: 100,
-                              );
-                            },
-                          )),
-              ),
-            ),
-            SizedBox(height: 25),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              child: InkWell(
-                onTap: () {
-                  addPDFFile();
-                },
-                child: DottedBorder(
-                  color: Colors.blue,
-                  strokeWidth: 1,
-                  child: Container(
+                child: Obx(() {
+                  return Container(
                       decoration: BoxDecoration(
-                        color: periodicInspection == null
+                        color: controller.imageList.value.isEmpty
                             ? Colors.grey[200]
                             : Colors.blue[200],
                       ),
-                      height: 80,
+                      height: 100,
                       width: double.infinity,
-                      child: Column(
+                      child: controller.imageList.value.isEmpty
+                          ? const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.file_copy_outlined,
+                            Icons.image_outlined,
                             size: 25,
                           ),
                           SizedBox(height: 10),
                           Text(
-                            "ارفع ملف الفحص الدوري للمركبة",
+                            "ارفع صورة أو أكثر للمركبة",
                             style: TextStyle(fontSize: 14),
                           ),
                         ],
-                      )),
+                      )
+                          : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.imageList.value.length,
+                        itemBuilder: (context, index) {
+                          return Image.file(
+                            controller.imageList.value[index],
+                            height: 100,
+                            width: 100,
+                          );
+                        },
+                      ));
+                }),
+              ),
+            ),
+            const SizedBox(height: 25),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: InkWell(
+                onTap: () {
+                  controller.addPDFFile();
+                },
+                child: DottedBorder(
+                  color: Colors.blue,
+                  strokeWidth: 1,
+                  child: Obx(() {
+                    return Container(
+                        decoration: BoxDecoration(
+                          color: controller.periodicInspection.value.path
+                              .isEmpty
+                              ? Colors.grey[200]
+                              : Colors.blue[200],
+                        ),
+                        height: 80,
+                        width: double.infinity,
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.file_copy_outlined,
+                              size: 25,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              "ارفع ملف الفحص الدوري للمركبة",
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ));
+                  }),
                 ),
               ),
             ),
-            SizedBox(height: 25),
-            CustomTextField(hint: "الوصف (إختياري)"),
-            SizedBox(height: 20),
+            const SizedBox(height: 25),
+            Column(
+              children: [
+                CustomTextField(
+                  isEnable:  true,
+                  isValidate: true,
+                  inputType: TextInputType.number,
+                  maxLines: 1,
+                    maxLength: 10,
+                    hint: "${type == Type.AUCTION?'بداية السوم':'السعر'} (أجباري)", controller: priceController),
+                const SizedBox(height: 20),
+
+              ],
+            ),
+            CustomTextField(
+              isEnable: true,
+              isValidate: false,
+              inputType: TextInputType.text,
+              maxLength: 100,
+                maxLines: 3,
+                hint: "الوصف (إختياري)", controller: descriptionController),
+            const SizedBox(height: 20),
+
+
+            CustomDropdownMenuButton(
+                hint: 'المدينة',
+                list: controller.cites,
+                onChanged: (city){
+                  controller.selectedCity(city);
+                },
+                hintSearch: 'ابحث عن مدينتك'),
+
+
+            const SizedBox(height: 20),
 
             ElevatedButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) {
                   return;
                 }
-                if (imageList.isEmpty) {
+
+                if (controller.imageList.value.isEmpty) {
                   AwesomeDialog(
-                          context: context,
-                          dialogType: DialogType.error,
-                          animType: AnimType.rightSlide,
-                          title: 'خطأ',
-                          desc: 'يجب رفع صورة واحدة على الأقل',
-                          titleTextStyle: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                          descTextStyle: TextStyle(fontSize: 14),
-                          btnOkColor: Colors.blue,
-                          btnOkText: "إغلاق",
-                          btnOkOnPress: () {})
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.rightSlide,
+                      title: 'خطأ',
+                      desc: 'يجب رفع صورة واحدة على الأقل',
+                      titleTextStyle: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      descTextStyle: const TextStyle(fontSize: 14),
+                      btnOkColor: Colors.blue,
+                      btnOkText: "إغلاق",
+                      btnOkOnPress: () {})
                       .show();
                   return;
                 }
-                if (periodicInspection == null) {
+                if (controller.periodicInspection == null) {
                   AwesomeDialog(
-                          context: context,
-                          dialogType: DialogType.error,
-                          animType: AnimType.rightSlide,
-                          title: 'خطأ',
-                          desc: 'يجب رفع ملف الفحص الدوري',
-                          titleTextStyle: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                          descTextStyle: TextStyle(fontSize: 14),
-                          btnOkColor: Colors.blue,
-                          btnOkText: "إغلاق",
-                          btnOkOnPress: () {})
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.rightSlide,
+                      title: 'خطأ',
+                      desc: 'يجب رفع ملف الفحص الدوري',
+                      titleTextStyle: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      descTextStyle: const TextStyle(fontSize: 14),
+                      btnOkColor: Colors.blue,
+                      btnOkText: "إغلاق",
+                      btnOkOnPress: () {})
                       .show();
                   return;
                 }
                 AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.warning,
-                        animType: AnimType.rightSlide,
-                        title: 'تنبيه',
-                        desc: 'رجاء تأكد من عدم وجود أي معلومات خاطئة.',
-                        titleTextStyle: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                        descTextStyle: TextStyle(fontSize: 14),
-                        btnOkColor: Colors.blue,
-                        btnOkText: "استمرار",
-                        btnCancelText: "إلغاء",
-                        btnOkOnPress: () {},
-                        btnCancelOnPress: () {})
+                    context: context,
+                    dialogType: DialogType.warning,
+                    animType: AnimType.rightSlide,
+                    title: 'تنبيه',
+                    desc: 'رجاء تأكد من عدم وجود أي معلومات خاطئة.',
+                    titleTextStyle: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                    descTextStyle: const TextStyle(fontSize: 14),
+                    btnOkColor: Colors.blue,
+                    btnOkText: "استمرار",
+                    btnCancelText: "إلغاء",
+                    btnOkOnPress: () async {
+                      Car car = Car(
+                        carId: const Uuid().v4(),
+                        model: selectedModel ?? '',
+                        make: controller.selectedManufacturer!.value,
+                        year: year,
+                        paid: false,
+                        available: false,
+                        seller: Preference.shared.getUserName()!,
+                        sellerId: Preference.shared.getUserId()!,
+                        sellerPhone: Preference.shared.getUserPhone()!,
+                        type: type,
+                        price: double.parse(priceController.text.trim()),
+                        location: controller.selectedCity.value,
+                        mileage:int.parse(mileage.text),
+                        uploadDate: DateTime.now().toString(),
+                        expireDate: DateTime.now()
+                            .add(const Duration(days: 14))
+                            .toString(),
+                        addDate: DateTime.now().toString(),
+                        transmissionType: transmissionType,
+                        // Example
+                        description: descriptionController.text.trim(),
+                        company: controller.selectedManufacturer!.value,
+                        images: [],
+                        // Example
+                        auctions: [], // Example
+                      );
+                      await controller.addCar(car);
+                      Get.snackbar(
+                          "تمت إضافة السيارة!",
+                          "تمت إضافة سيارتك بنجاح.",
+                          snackPosition: SnackPosition.TOP);
+
+                    },
+                    btnCancelOnPress: () {})
                     .show();
               },
-              child: Text(
-                'نشر',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
+              child: Obx(() {
+                return controller.isLoading.isTrue?const Center(child: CircularProgressIndicator()):Text(
+                  controller.isLoading.isTrue
+                      ? '${controller.currentOp}'
+                      : 'نشر',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                );
+              }),
             ),
           ],
         ),

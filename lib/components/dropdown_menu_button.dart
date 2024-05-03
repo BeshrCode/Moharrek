@@ -31,7 +31,7 @@ class _CustomDropdownMenuButtonState extends State<CustomDropdownMenuButton> {
           return "رجاء اختر من القائمة";
         }
       },
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           errorStyle: TextStyle(height: 0.1)),

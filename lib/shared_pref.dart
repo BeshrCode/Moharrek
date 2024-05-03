@@ -6,9 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Package imports:import 'package:shared_preferences/shared_preferences.dart';
 
 /* global class for handle all the preference activity into application */
-
+//flutter pub add shared_preferences
 class Preference {
-  static const String blanace = "balance";
+  static const String _userID = "userID";
+  static const String _userAdmin = "_userAdmin";
+  static const String _userPhone = "_userPhone";
+  static const String _userName = "userName";
 
   // ------------------ SINGLETON -----------------------
   static final Preference _preference = Preference._internal();
@@ -36,38 +39,33 @@ class Preference {
   }
 
   // String get & set
-  String? getString(String key) {
-    return _pref!.getString(key);
+  String? getUserId() {
+    return _pref!.getString(_userID) ?? '';
+  }
+  bool? getAdmin() {
+    return _pref!.getBool(_userAdmin) ?? false;
+  }
+  String? getUserPhone() {
+    return _pref!.getString(_userPhone) ?? '';
+  }
+  String? getUserName() {
+    return _pref!.getString(_userName) ??'';
   }
 
-  Future<bool> setString(String key, String value) {
-    return _pref!.setString(key, value);
+  Future<bool> setUserId(String value) {
+    return _pref!.setString(_userID, value);
+  }
+  Future<bool> setUserAdmin(bool value) {
+    return _pref!.setBool(_userAdmin, value);
+  }
+  Future<bool> setUserPhone(String value) {
+    return _pref!.setString(_userPhone, value);
+  }
+  Future<bool> setUserName(String value) {
+    return _pref!.setString(_userName, value);
   }
 
-  // Int get & set
-  int? getInt(String key) {
-    return _pref!.getInt(key);
-  }
-
-  Future<bool> setInt(String key, int value) {
-    return _pref!.setInt(key, value);
-  }
-
-  // Bool get & set
-  bool? getBool(String key) {
-    return _pref!.getBool(key);
-  }
-
-  Future<bool> setBool(String key, bool value) {
-    return _pref!.setBool(key, value);
-  }
-
-  // Double get & set
-  double? getDouble(String key) {
-    return _pref!.getDouble(key);
-  }
-
-  Future<bool> setDouble(String key, double value) {
-    return _pref!.setDouble(key, value);
+  Future<bool> signOut() async {
+    return await _pref!.clear();
   }
 }

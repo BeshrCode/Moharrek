@@ -1,37 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:moharrek/bottom_nav_bar.dart';
+import 'package:get/get.dart';
 import 'package:moharrek/components/auth_button.dart';
 import 'package:moharrek/components/text_form_field.dart';
+import 'package:moharrek/pages/auth/controller/auth_controller.dart';
 
-class UsernamePage extends StatefulWidget {
+class UsernamePage extends GetWidget<AuthController> {
   const UsernamePage({super.key});
 
-  @override
-  State<UsernamePage> createState() => _UsernamePageState();
-}
-
-class _UsernamePageState extends State<UsernamePage> {
-  TextEditingController username = TextEditingController();
-  GlobalKey<FormState> formState = GlobalKey();
-  bool isLoading = false;
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    username.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> formState = GlobalKey();
+    controller.getUsernameByUID();
     return Scaffold(
         appBar: AppBar(),
         body: Form(
           key: formState,
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             children: [
-              Container(
+              SizedBox(
                 height: 200,
                 width: 200,
                 child: Image.asset("images/register.jpg"),
@@ -41,7 +29,10 @@ class _UsernamePageState extends State<UsernamePage> {
               ),
               Center(
                 child: Text("إنشاء اسم المستخدم",
-                    style: Theme.of(context).textTheme.titleSmall),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleSmall),
               ),
               const SizedBox(
                 height: 10,
@@ -56,7 +47,7 @@ class _UsernamePageState extends State<UsernamePage> {
                 height: 20,
               ),
               CustomeTextFormField(
-                  hint: "أدخل اسم المستخدم", myController: username),
+                  hint: "أدخل اسم المستخدم", myController: controller.username),
               const SizedBox(
                 height: 5,
               ),
@@ -70,18 +61,21 @@ class _UsernamePageState extends State<UsernamePage> {
               const SizedBox(
                 height: 30,
               ),
-              CustomeAuthButton(
-                  text: "متابعة",
-                  color: Colors.blue,
-                  isLoading: isLoading,
-                  onPressed: () {
-                    if (formState.currentState!.validate()) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => BottomNavBar()),
-                        (route) => false,
-                      );
-                    }
-                  }),
+              Obx(() {
+                return CustomeAuthButton(
+                    text: "متابعة",
+                    color: Colors.blue,
+                    isLoading: controller.isLoading.value,
+                    onPressed: () async {
+                      if (formState.currentState!.validate()) {
+                        await controller.updateUsername();
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //   MaterialPageRoute(builder: (context) => BottomNavBar()),
+                        //   (route) => false,
+                        // );
+                      }
+                    });
+              }),
             ],
           ),
         ));

@@ -1,54 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:moharrek/app_pages.dart';
+import 'package:moharrek/pages/home/controller/carController.dart';
 import 'package:moharrek/widget/home_widget.dart';
-import 'package:moharrek/pages/profile/add_car_page.dart';
 
-class MyListingPage extends StatefulWidget {
+import '../home/model/car.dart';
+
+class MyListingPage extends GetWidget<CarController> {
   const MyListingPage({super.key});
 
-  @override
-  State<MyListingPage> createState() => _MyListingPageState();
-}
 
-class _MyListingPageState extends State<MyListingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => AddCarPage()));
+            Get.toNamed(AppPages.addCarPage,arguments: Type.USED);
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "إعلاناتي",
             style: TextStyle(fontSize: 24),
           ),
         ),
         body: Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 30),
-          child: ListView(
-            children: [
-              MyListingCarCard(
-                  model: "كامري",
-                  make: "تويوتا",
-                  year: 2023,
-                  uploadDate: "قبل اسبوع",
-                  image: "images/car_card/blue_car.jpg"),
-              SizedBox(
-                height: 20,
-              ),
-              MyListingCarCard(
-                  model: "كامري",
-                  make: "تويوتا",
-                  year: 2023,
-                  uploadDate: "قبل اسبوع",
-                  image: "images/car_2.jpg"),
-              SizedBox(
-                height: 20,
-              ),
-            ],
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 30),
+          child: StreamBuilder<List<Car>>(
+            stream: controller.getMyCarsStream(),
+            builder: (context, snapshot) {
+              return snapshot.hasData?ListView.separated(
+                itemBuilder: (context, index) {
+                  return MyListingCarCard(
+                      car: snapshot.data![index],);
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(
+                    height: 20,
+                  );
+                }, itemCount: snapshot.data!.length,
+              ):const Center(child: CircularProgressIndicator());
+            }
           ),
         ));
   }
