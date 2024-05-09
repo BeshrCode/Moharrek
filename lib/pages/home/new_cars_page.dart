@@ -44,7 +44,7 @@ class NewCarTabView extends GetWidget<CarController> {
                 onTap: () {
                   controller.selectBrand(index);
                 },
-                child: BrandWidget(controller: controller, index: index),
+                child: BrandWidget(controller: controller, index: index,list: controller.brands),
               );
             },
           ),
@@ -81,6 +81,9 @@ class NewCarTabView extends GetWidget<CarController> {
                         // Check if the car's details contain the searchText
                         final bool textMatch = element.model.toLowerCase().contains(searchText) ||
                             element.make.toLowerCase().contains(searchText) ||
+                            element.seller.toLowerCase().contains(searchText) ||
+                            element.sellerPhone.toLowerCase().contains(searchText) ||
+                            element.company.toLowerCase().contains(searchText) ||
                             element.location.toLowerCase().contains(searchText);
 
                         // Return true if either the city, brand, or searchText matches

@@ -58,6 +58,8 @@ class AuthController extends GetxController {
       if (snapshot.exists) {
         Map<String, dynamic> userData = snapshot.data()! as Map<String,dynamic>;
         username.text = userData['userName'] ?? '';
+        Get.offAllNamed(AppPages.homePage);
+
         return userData['userName'] ?? ''; // Return username if exists, otherwise return empty string
       } else {
         username.text = '';

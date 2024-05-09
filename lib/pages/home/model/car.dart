@@ -23,6 +23,7 @@ class Car {
   String sellerPhone;
   Type type;
   double price;
+  dynamic bidPrice;
   String location;
   int mileage;
   String uploadDate;
@@ -31,6 +32,7 @@ class Car {
   String transmissionType;
   List<String> images;
   List<Auction> auctions;
+
 
   Car({
     required this.carId,
@@ -53,6 +55,7 @@ class Car {
     required this.description,
     required this.company,
     required this.images,
+    required this.bidPrice,
     required this.auctions,
   });
 
@@ -71,6 +74,7 @@ class Car {
       price: json['price']?.toDouble() ?? 0.0,
       location: json['location'] ?? '',
       mileage: json['mileage'] ?? 0,
+      bidPrice: json['bidPrice'] ?? 0,
       uploadDate: json['uploadDate'] ?? '',
       expireDate: json['expireDate'] ?? '',
       addDate: json['addDate'] ?? '',
@@ -96,6 +100,7 @@ class Car {
     return {
       'carId': carId,
       'model': model,
+      'bidPrice': bidPrice,
       'paid': paid,
       'available': available,
       'make': make,

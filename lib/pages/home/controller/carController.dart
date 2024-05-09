@@ -23,14 +23,15 @@ class CarController extends GetxController {
   final RxString currentOp = RxString('');
   Rx<List<File>> imageList = Rx(RxList.empty());
   Rx<File> periodicInspection = Rx(File(''));
-  RxString? selectedManufacturer = RxString('Toyota');
+  RxString? selectedManufacturer = RxString('تويوتا');
   RxString? searchText = RxString('');
   RxInt selectedBrand = RxInt(0);
+  RxInt selectedChildBrand = RxInt(0);
   RxInt newSelectedBrand = RxInt(0);
   RxString selectedCity = ''.obs;
   RxString newSelectedCity = 'الكل'.obs;
   RxString usedSelectedCity = 'الكل'.obs;
-  RxDouble initAuctionPrice = RxDouble(0);
+  RxDouble initAuctionPrice = RxDouble(100);
   RxDouble limitAuctionPrice = RxDouble(0);
   RxDouble price = RxDouble(0);
   RxList<Car> newCars = List<Car>.empty().obs;
@@ -45,7 +46,21 @@ class CarController extends GetxController {
     "الدمام", // Dammam
     "الخبر", // Khobar
     "الطائف", ];
-  List brands = ['الكل','Toyota','Ford','BMW','Honda','Nissan'];
+  List<String> brands = ['الكل','تويوتا','فورد','بي إم دبليو','هوندا','نيسان'];
+  List<String> manufacturers = [
+    "تويوتا",
+    "نيسان",
+    "فورد",
+    "بي إم دبليو",
+  ];
+
+  Map<String,List<String>> models = {
+    "تويوتا": ['كامري', 'كورولا', 'راف فور', 'هايلاندر'],
+    "نيسان": ['ألتيما', 'ماكسيما', 'روغ', 'باثفايندر'],
+    "فورد": ['فورد إف-150', 'فورد موستانغ', 'فورد إكسبلورر', 'فورد اسكيب'],
+    "بي إم دبليو": ['بي إم دبليو الفئة 3', 'بي إم دبليو الفئة 5', 'بي إم دبليو إكس5', 'بي إم دبليو i8']
+  };
+
 
   Future<void> updateAvailable(String carId, bool newAvailability) async {
     try {
@@ -383,7 +398,9 @@ class CarController extends GetxController {
 
   void selectBrand(int index) {
     selectedBrand(index);
-    Logger().d(selectedBrand.value);
+  }
+  void selectBrandChild(int index) {
+    selectedChildBrand(index);
   }
   void selectNewBrand(int index) {
     newSelectedBrand(index);

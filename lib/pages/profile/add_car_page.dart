@@ -4,7 +4,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:moharrek/components/text_form_field.dart';
 import 'package:moharrek/components/dropdown_menu_button.dart';
 import 'package:moharrek/components/year_picker.dart';
@@ -12,7 +11,6 @@ import 'package:moharrek/pages/home/controller/carController.dart';
 import 'package:moharrek/shared_pref.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:uuid/uuid.dart';
-import '../../components/cites_menu.dart';
 import '../home/model/car.dart';
 
 class AddCarPage extends GetWidget<CarController> {
@@ -20,19 +18,7 @@ class AddCarPage extends GetWidget<CarController> {
   String model = "";
   int year = 2024;
   TextEditingController mileage = TextEditingController();
-  List<String> manufacturers = [
-    "Toyota",
-    "Nissan",
-    "Ford",
-    "BMW",
-  ];
 
-  Map models = {
-    "Toyota": ['Camry', 'Corolla', 'RAV4', 'Highlander'],
-    "Nissan": ['Altima', 'Maxima', 'Rogue', 'Pathfinder'],
-    "Ford": ['Ford F-150', 'Ford Mustang', 'Ford Explorer', 'Ford Escape'],
-    "BMW": ['BMW 3 Series', 'BMW 5 Series', 'BMW X5', 'BMW i8']
-  };
   final transmissionTypes = ['Automatic', 'Manual'];
 
   String transmissionType = 'أوتوماتيك';
@@ -40,6 +26,7 @@ class AddCarPage extends GetWidget<CarController> {
   String? selectedModel;
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController bisPriceController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey();
 
@@ -77,7 +64,7 @@ class AddCarPage extends GetWidget<CarController> {
             CustomDropdownMenuButton(
                 hint: "اختر الشركة",
                 hintSearch: "ابحث عن الشركة...",
-                list: manufacturers,
+                list: controller.manufacturers,
                 selectedValue: controller.selectedManufacturer!.value,
                 onChanged: (value) {
                   controller.selectedManufacturer!.value = value;
@@ -89,7 +76,7 @@ class AddCarPage extends GetWidget<CarController> {
               return CustomDropdownMenuButton(
                   hint: "اختر المودل",
                   hintSearch: "ابحث عن المودل...",
-                  list: models[controller.selectedManufacturer!.value] ?? ["Toyota"],
+                  list: controller.models[controller.selectedManufacturer!.value] ?? ["تويوتا"],
                   selectedValue: selectedModel,
                   onChanged: (value) {
                     selectedModel = value;
@@ -217,6 +204,23 @@ class AddCarPage extends GetWidget<CarController> {
               ),
             ),
             const SizedBox(height: 25),
+            Visibility(
+              visible: type == Type.AUCTION?true:false,
+              child: Column(
+                children: [
+                  CustomTextField(
+                    isEnable: type==Type.AUCTION?true:false,
+                    isValidate: true,
+                    inputType: TextInputType.number,
+                    maxLines: 1,
+                      maxLength: 10,
+                      hint: "${type == Type.AUCTION?'الزيادة في السوم':'السعر'} (أجباري)",
+                      controller: bisPriceController),
+
+                ],
+              ),
+            ),
+            const SizedBox(height: 5),
             Column(
               children: [
                 CustomTextField(
@@ -226,7 +230,6 @@ class AddCarPage extends GetWidget<CarController> {
                   maxLines: 1,
                     maxLength: 10,
                     hint: "${type == Type.AUCTION?'بداية السوم':'السعر'} (أجباري)", controller: priceController),
-                const SizedBox(height: 20),
 
               ],
             ),
@@ -303,6 +306,7 @@ class AddCarPage extends GetWidget<CarController> {
                     btnCancelText: "إلغاء",
                     btnOkOnPress: () async {
                       Car car = Car(
+                        bidPrice: double.parse(bisPriceController.text),
                         carId: const Uuid().v4(),
                         model: selectedModel ?? '',
                         make: controller.selectedManufacturer!.value,
@@ -317,9 +321,7 @@ class AddCarPage extends GetWidget<CarController> {
                         location: controller.selectedCity.value,
                         mileage:int.parse(mileage.text),
                         uploadDate: DateTime.now().toString(),
-                        expireDate: DateTime.now()
-                            .add(const Duration(days: 14))
-                            .toString(),
+                        expireDate: DateTime.now().add(const Duration(days: 14)).toString(),
                         addDate: DateTime.now().toString(),
                         transmissionType: transmissionType,
                         // Example

@@ -57,19 +57,7 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
                           btnOkText: "استمرار",
                           btnCancelText: "إالغاء",
                           btnOkOnPress: ()async {
-                            var pr = _car.auctions.isEmpty?controller.price.value:controller.limitAuctionPrice.value;
-                           await controller.addAuction(
-                              Auction(carId: _car.carId,
-                                  participantId: Preference.shared.getUserId()!,
-                                  participantName: Preference.shared.getUserName()!,
-                                  amount: (pr+controller.initAuctionPrice.value),
-                                  date: DateTime.now().toString(),
-                                  expiryDate: DateTime.now())
-                            );
-                           Logger().d('initAuctionPrice${controller.initAuctionPrice.value}');
-                           Logger().d('price${controller.price.value}');
-                           Logger().d('limitAuctionPrice${controller.limitAuctionPrice.value}');
-                           Logger().d('limitAuctionPrice${controller.limitAuctionPrice.value}');
+
                             AwesomeDialog(
                               context: context,
                               dismissOnTouchOutside: false,
@@ -127,6 +115,7 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
               _car.auctions.sort((a, b) => b.amount.compareTo(a.amount),);
             }
             controller.price(car.price);
+            bool isLastMe = car.auctions[car.auctions.length-1].participantId==Preference.shared.getUserId();
             return snapshot.connectionState!=ConnectionState.waiting? ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
@@ -144,10 +133,24 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: CustomeButton(
                       text: status(car),
-                      color: isExpire(car.expireDate)?Colors.red:Colors.blue,
+                      color: isExpire(car.expireDate)?Colors.red:isLastMe?Colors.grey:Colors.blue,
                       height: 5,
-                      onPressed: () {
-                        isExpire(car.expireDate)?null:openDialog(context,car.price);
+                      onPressed: () async{
+
+                        if(!isLastMe){
+                          var pr = _car.auctions.isEmpty?controller.price.value:controller.limitAuctionPrice.value;
+                          await controller.addAuction(
+                              Auction(carId: _car.carId,
+                                  participantId: Preference.shared.getUserId()!,
+                                  participantName: Preference.shared.getUserName()!,
+                                  amount: (pr+_car.bidPrice),
+                                  date: DateTime.now().toString(),
+                                  expiryDate: DateTime.now())
+                          );
+                        }else{
+                          Get.snackbar('Last One is You', 'Can not add');
+                        }
+                        // isExpire(car.expireDate)?null:openDialog(context,car.price);
                       },
                       isLoading: false),
                 )

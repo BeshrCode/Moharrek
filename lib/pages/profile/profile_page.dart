@@ -3,16 +3,14 @@ import 'package:get/get.dart';
 import 'package:moharrek/app_pages.dart';
 import 'package:moharrek/pages/auth/controller/auth_controller.dart';
 import 'package:moharrek/pages/profile/my_listing.dart';
-import 'package:moharrek/shared_pref.dart';
+import '../home/model/car.dart';
 
 class ProfilePage extends GetWidget<AuthController> {
   const ProfilePage({super.key});
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        // title: Text('Title'),
-        // ),
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
       child: ListView(
@@ -98,6 +96,27 @@ class ProfilePage extends GetWidget<AuthController> {
                     const SizedBox(
                       height: 10,
                     ),
+                    Column(children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Get.toNamed(AppPages.addCarPage,arguments:Type.USED);
+                        },
+                        child: const Row(
+                          children: [
+                            Icon(Icons.add_box_sharp),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("أضافة سيارة مستعملة",
+                                style:
+                                TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ],),
                     Visibility(
                       visible: snapshot.data!.admin,
                       child: Column(children: [
@@ -106,15 +125,15 @@ class ProfilePage extends GetWidget<AuthController> {
                         ),
                         InkWell(
                           onTap: () {
-                            Get.toNamed(AppPages.unAvailableCarsPage);
+                            Get.toNamed(AppPages.addCarPage,arguments:Type.NEW);
                           },
                           child: const Row(
                             children: [
-                              Icon(Icons.local_offer),
+                              Icon(Icons.add_box_sharp),
                               SizedBox(
                                 width: 10,
                               ),
-                              Text("عروض المزايدة",
+                              Text("أضافة سيارة معرض",
                                   style:
                                   TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                             ],
@@ -122,6 +141,27 @@ class ProfilePage extends GetWidget<AuthController> {
                         ),
                       ],),
                     ),
+                    Column(children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Get.toNamed(AppPages.addCarPage,arguments:Type.AUCTION);
+                        },
+                        child: const Row(
+                          children: [
+                            Icon(Icons.add_box_sharp),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("أضافة سيارة في المزاد",
+                                style:
+                                TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ],),
                     const SizedBox(
                       height: 15,
                     ),

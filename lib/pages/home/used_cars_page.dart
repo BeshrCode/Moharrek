@@ -10,8 +10,6 @@ import 'model/car.dart';
 
 class UsedCarTabBarView extends GetWidget<CarController> {
   const UsedCarTabBarView({super.key});
-
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -30,24 +28,52 @@ class UsedCarTabBarView extends GetWidget<CarController> {
             style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(bottom: 30),
-          height: 40,
-          // color: Colors.amber,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.brands.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                splashColor: Colors.white,
-                onTap: () {
-                  controller.selectBrand(index);
-                },
-                child: BrandWidget(controller: controller, index: index),
-              );
-            },
+
+        SizedBox(
+            height: 40,
+            // color: Colors.amber,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.brands.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  splashColor: Colors.white,
+                  onTap: () {
+                    controller.selectBrand(index);
+                  },
+                  child: BrandWidget(controller: controller,
+                      index: index,
+                      list: controller.brands),
+                );
+              },
+            ),
           ),
-        ),
+        Obx(() {
+          return Visibility(
+            visible: controller.selectedBrand.value != 0,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 30),
+              height: 40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.models[controller.selectedManufacturer!.value]!.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    splashColor: Colors.white,
+                    onTap: () {
+                      controller.selectBrandChild(index);
+                    },
+                    child: BrandChildWidget(
+                      controller: controller,
+                      index: index,
+                      list: controller.models[controller.selectedManufacturer!.value] ?? ["تويوتا"],
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }),
         Container(
           child: const Text(
             "استكشف",
@@ -66,31 +92,51 @@ class UsedCarTabBarView extends GetWidget<CarController> {
                   if (snapshot.hasData) {
                     return Obx(() {
                       final filteredCars = snapshot.data!.where((element) {
-                        final String searchText = controller.searchText!.value.toLowerCase();
-                        final String selectedCity = controller.usedSelectedCity.value;
-                        final String selectedBrand = controller.brands[controller.selectedBrand.value];
+                        final String searchText = controller.searchText!.value
+                            .toLowerCase();
+                        final String selectedCity = controller.usedSelectedCity
+                            .value;
+                        final int selectedMod = controller.selectedChildBrand.value;
+                        final String selectedModel = controller.models[controller.selectedManufacturer!.value]![selectedMod];
+                        final String selectedBrand = controller
+                            .brands[controller.selectedBrand.value];
 
                         // Check if the selected city is "الكل" or matches the car's location
-                        final bool cityMatch = selectedCity == 'الكل' || element.location == selectedCity;
+                        final bool cityMatch = selectedCity == 'الكل' ||
+                            element.location == selectedCity;
+
+                        final bool modelMatch = selectedModel == 0 ||
+                            element.model == selectedModel;
+
 
                         // Check if the selected brand is "الكل" or matches the car's company
-                        final bool brandMatch = selectedBrand == 'الكل' || selectedBrand == element.company;
+                        final bool brandMatch = selectedBrand == 'الكل' ||
+                            selectedBrand == element.company;
 
                         // Check if the car's details contain the searchText
-                        final bool textMatch = element.model.toLowerCase().contains(searchText) ||
+                        final bool textMatch = element.model.toLowerCase()
+                            .contains(searchText) ||
                             element.make.toLowerCase().contains(searchText) ||
+                            element.seller.toLowerCase().contains(searchText) ||
+                            element.sellerPhone.toLowerCase().contains(
+                                searchText) ||
+                            element.company.toLowerCase().contains(
+                                searchText) ||
                             element.location.toLowerCase().contains(searchText);
 
                         // Return true if either the city, brand, or searchText matches
-                        return cityMatch && brandMatch && textMatch;
+                        return cityMatch && brandMatch && textMatch && modelMatch;
                       });
 
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: filteredCars.toList().length, // Convert to list for indexing
+                        itemCount: filteredCars
+                            .toList()
+                            .length, // Convert to list for indexing
                         itemBuilder: (context, index) {
-                          Car car = filteredCars.toList()[index]; // Access element by index in list
+                          Car car = filteredCars
+                              .toList()[index]; // Access element by index in list
 
                           return Column(
                             children: [
