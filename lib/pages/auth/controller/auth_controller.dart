@@ -52,6 +52,8 @@ class AuthController extends GetxController {
     phoneNumberController.dispose();
     otpController.dispose();
   } // Function to get username by UID from Firestore
+
+
   Future<String> getUsernameByUID() async {
     try {
       DocumentSnapshot snapshot = await _firestore.collection('users').doc(Preference.shared.getUserId()).get();
@@ -60,14 +62,14 @@ class AuthController extends GetxController {
         username.text = userData['userName'] ?? '';
         Get.offAllNamed(AppPages.homePage);
 
-        return userData['userName'] ?? ''; // Return username if exists, otherwise return empty string
+        return userData['userName'] ?? '';
       } else {
         username.text = '';
-        return ''; // Return empty string if user document does not exist
+        return '';
       }
     } catch (e) {
       username.text = '';
-      return ''; // Return empty string in case of any error
+      return '';
     }
   }
 
@@ -76,7 +78,7 @@ class AuthController extends GetxController {
   Future<void> signInWithPhoneNumber(String number) async {
     try{
       if(number.isEmpty){
-        Get.snackbar('title', 'empty');
+        Get.snackbar('العنوان', 'الحقل فارغ');
       }else {
         _auth.verifyPhoneNumber(
           phoneNumber: '+966$number',
@@ -84,11 +86,11 @@ class AuthController extends GetxController {
             Logger().d('verificationCompleted $phoneAuthCredential');
           },
           verificationFailed: (error) async {
-            Get.snackbar('error', '$error');
+            Get.snackbar('خطأ', '$error');
           },
           codeSent: (verificationId, forceResendingToken) {
             _verificationId = verificationId;
-            Get.snackbar('Code Sent', 'Code Sent Successfully.');
+            Get.snackbar('تم إرسال الكود', 'تم إرسال الكود بنجاح.');
           },
           codeAutoRetrievalTimeout: (verificationId) {
             Logger().d('code sent $verificationId');
@@ -116,19 +118,18 @@ class AuthController extends GetxController {
       // Add user data to Firestore
       await addUserToFirestore();
       Preference.shared.setUserId(_auth.currentUser!.uid);
-      Get.offNamed(AppPages.userName);
+      Preference.shared.setUserPhone(_auth.currentUser!.phoneNumber!);
       isLoading.value = false; // Set loading state to false
-      Get.snackbar('Success', 'OTP verified successfully');
+      Get.snackbar('نجاح', 'تم التحقق من الرمز بنجاح');
 
     } catch (e) {
       Logger().e('Auth error $e');
       isLoading.value = false; // Set loading state to false
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('خطأ', e.toString());
     }
   }
   Stream<UserData?> getUserDataStream() {
     return _firestore.collection('users').doc(_auth.currentUser!.uid).snapshots().map((snapshot) {
-    // return _firestore.collection('users').doc(_auth.currentUser?.uid).snapshots().map((snapshot) {
       if (snapshot.exists) {
         UserData userData = UserData.fromMap(snapshot.data()!);
         Preference.shared.setUserAdmin(userData.admin);
@@ -138,6 +139,33 @@ class AuthController extends GetxController {
       }
     });
   }
+
+  Future<void> blockUser(String userId) async {
+    try {
+      // Ensure valid user ID
+      if (userId.isEmpty) {
+        throw Exception('Invalid user ID provided for blocking.');
+      }
+
+      // Check if the user to be blocked is the current user
+      if (userId == _auth.currentUser!.uid) {
+        throw Exception('Cannot block yourself.');
+      }
+
+      // Update the blocked field in the user document
+      await _firestore.collection('users').doc(userId).update({
+        'blocked': true,
+      });
+
+      // (Optional) Consider logging the blocking action
+      Logger().i('User $userId blocked successfully.');
+
+      Get.snackbar('نجاح', 'تم حظر المستخدم بنجاح'); // Success snackbar
+    } catch (e) {
+      Get.snackbar('خطأ', e.toString()); // Error snackbar
+    }
+  }
+
   // Function to add user data to Firestore
   Future<void> addUserToFirestore() async {
     try {
@@ -156,10 +184,14 @@ class AuthController extends GetxController {
         if(!documentExists){
           // Add user data to Firestore by converting User object to a Map
           await _firestore.collection('users').doc(currentUser.uid).set(user.toMap());
+          Get.offAllNamed(AppPages.userName);
+
+        }else{
+          Get.offAllNamed(AppPages.homePage);
         }
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('خطأ', e.toString());
     }
     // Create a user object
     UserData user = UserData(
@@ -173,8 +205,8 @@ class AuthController extends GetxController {
     bool documentExists = await _firestore.collection('users').doc(user.uid).get().then((doc) => doc.exists);
 
     if(!documentExists){
-      // Add user data to Firestore by converting User object to a Map
-      await _firestore.collection('users').doc(user.uid).set(user.toMap());
+      Get.snackbar('نجاح', 'مرحباً بعودتك');
+
     }
   }
 
@@ -185,9 +217,9 @@ class AuthController extends GetxController {
     try {
 
         await _firestore.collection('users').doc(_auth.currentUser!.uid).update({'userName': username.text});
-        Get.snackbar('Success', 'Username updated successfully');
-      Preference.shared.setUserName(username.text);
-      Preference.shared.setUserPhone(_auth.currentUser!.phoneNumber!);
+        Get.snackbar('نجاح', 'تم تحديث اسم المستخدم بنجاح');
+        Preference.shared.setUserName(username.text);
+        Preference.shared.setUserPhone(_auth.currentUser!.phoneNumber!);
 
 
         Get.offAllNamed(AppPages.homePage);
@@ -197,7 +229,7 @@ class AuthController extends GetxController {
     } catch (e) {
       isLoading.toggle();
 
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('خطأ', e.toString());
     }
   }
 
@@ -209,7 +241,7 @@ class AuthController extends GetxController {
       user.value = null;
     } catch (e) {
       print(e.toString());
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('خطأ', e.toString());
     }
   }
 }

@@ -48,7 +48,7 @@ class NewCarDetailsPage extends GetWidget<CarController> {
               textColor: Colors.white,
               buttonColor: Colors.blue,
               onPressed: () {
-                controller.makePhoneCall(car.sellerPhone);
+                controller.openWhatsAppChat(car.sellerPhone);
               },
               isLoading: false,
               width: 30,
@@ -68,7 +68,7 @@ class NewCarDetailsPage extends GetWidget<CarController> {
             height: 5,
           ),
            NewCarDetailCard(
-              model: car.model, make: car.make, year: car.year, isManualGear: car.transmissionType=='أوتوماتيك'?false:true),
+              model: car.model, make: car.make, year: car.year, isManualGear: car.transmissionType=='عادي'?true:false),
           const SizedBox(
             height: 20,
           ),

@@ -66,7 +66,8 @@ class _CustomDropdownMenuButtonState extends State<CustomDropdownMenuButton> {
               ))
           .toList(),
 
-      value: widget.selectedValue,
+      value:
+      widget.selectedValue,
       onChanged: (value) {
         widget.onChanged(value);
       },

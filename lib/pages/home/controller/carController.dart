@@ -12,7 +12,7 @@ import 'package:moharrek/pages/home/model/car.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage; // Add this import
 import 'package:moharrek/shared_pref.dart';
 import '../model/bidding.dart';
-
+import 'package:lottie/lottie.dart';
 class CarController extends GetxController {
   final CollectionReference _carsCollection =
   FirebaseFirestore.instance.collection('cars');
@@ -22,6 +22,7 @@ class CarController extends GetxController {
   final RxDouble progress = RxDouble(0);
   final RxString currentOp = RxString('');
   Rx<List<File>> imageList = Rx(RxList.empty());
+  Rx<List<String>> addedImageList = Rx(RxList.empty());
   Rx<File> periodicInspection = Rx(File(''));
   RxString? selectedManufacturer = RxString('تويوتا');
   RxString? searchText = RxString('');
@@ -31,11 +32,16 @@ class CarController extends GetxController {
   RxString selectedCity = ''.obs;
   RxString newSelectedCity = 'الكل'.obs;
   RxString usedSelectedCity = 'الكل'.obs;
+  RxString selectedGear = 'الكل'.obs;
+  RxInt selectedYear = 0.obs;
   RxDouble initAuctionPrice = RxDouble(100);
   RxDouble limitAuctionPrice = RxDouble(0);
   RxDouble price = RxDouble(0);
   RxList<Car> newCars = List<Car>.empty().obs;
   RxList<Car> usedCars = List<Car>.empty().obs;
+  Rx<DateTime> expireDate = Rx(DateTime.now());
+
+  RxBool isAcknowledged = false.obs;
 
   List<String> cites = [
     "الكل",
@@ -46,7 +52,7 @@ class CarController extends GetxController {
     "الدمام", // Dammam
     "الخبر", // Khobar
     "الطائف", ];
-  List<String> brands = ['الكل','تويوتا','فورد','بي إم دبليو','هوندا','نيسان'];
+  List<String> brands = ['الكل','تويوتا','فورد','بي إم دبليو','هوندا','نيسان','Lex'];
   List<String> manufacturers = [
     "تويوتا",
     "نيسان",
@@ -56,16 +62,32 @@ class CarController extends GetxController {
 
   Map<String,List<String>> models = {
     "تويوتا": ['كامري', 'كورولا', 'راف فور', 'هايلاندر'],
+    "Lex": ['g', 'w', 'w فور', 's'],
     "نيسان": ['ألتيما', 'ماكسيما', 'روغ', 'باثفايندر'],
     "فورد": ['فورد إف-150', 'فورد موستانغ', 'فورد إكسبلورر', 'فورد اسكيب'],
     "بي إم دبليو": ['بي إم دبليو الفئة 3', 'بي إم دبليو الفئة 5', 'بي إم دبليو إكس5', 'بي إم دبليو i8']
   };
 
+  void clearFilters() {
+    searchText!.value = '';
+    usedSelectedCity.value = 'الكل';
+    selectedGear.value = 'الكل';
+    selectedYear.value = 0;
+    selectedBrand.value = 0;
+    selectedChildBrand.value = 0;
+  }
+  void selectGearFilter(String filter) {
+    selectedGear.value = filter;
+    // You can perform additional actions here if needed
+    // For example, filtering the list of cars based on the selected gear filter
+  }
 
   Future<void> updateAvailable(String carId, bool newAvailability) async {
     try {
       isLoading.value = true;
-      await _carsCollection.doc(carId).update({'available': newAvailability,'expireDate': DateTime.now().add(const Duration(days: 14)).toString()});
+      await _carsCollection.doc(carId).update({'available': newAvailability,
+        // 'expireDate': DateTime.now().add(const Duration(days: 14)).toString()
+      });
       isLoading.value = false;
     } catch (e) {
       error.value = 'Error updating car availability: $e';
@@ -175,11 +197,53 @@ class CarController extends GetxController {
       throw e;
     }
   }
+
+
+  Future<void> updateCarPaymentStatus(String carId, bool paid, String paidBy) async {
+    try {
+      isLoading.value = true;
+      await _carsCollection.doc(carId).update({
+        'paid': paid,
+        'paidBy': paidBy,
+      });
+      showPaidSuccessDialog();
+      isLoading.value = false;
+    } catch (e) {
+      error.value = 'Error updating car payment status: $e';
+      isLoading.value = false;
+    }
+  }
+  Future<void> showPaidSuccessDialog() async {
+    return Get.dialog(
+      AlertDialog(
+        surfaceTintColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Lottie.asset('assets/success.json', height: 100.0, width: 100.0), // Replace with your Lottie file path
+            const SizedBox(height: 10.0),
+            const Text(
+              'تمت عملية الشراء بنجاح',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('موافق'),
+          ),
+        ],
+      ),
+    );
+  }
   Future<void> addCar(Car car) async {
     try {
       car.images = await uploadImages(imageList.value);
       car.uploadDate = await uploadPdf(periodicInspection.value);
-      currentOp('Adding Car Data');
       await _carsCollection.doc(car.carId).set(car.toJson());
       isLoading(false);
       periodicInspection(File(''));
@@ -199,17 +263,54 @@ class CarController extends GetxController {
       isLoading.value = false;
     }
   }
-  Future<void> updateCar(
-      String carId, Map<String, dynamic> updatedData) async {
+  Future<void> updateCar(Car car) async {
     try {
       isLoading.value = true;
-      await _carsCollection.doc(carId).update(updatedData);
+      currentOp('Updating Car Data');
+
+      if (imageList.value.isNotEmpty) {
+        car.images = await uploadImages(imageList.value);
+      }
+      if (periodicInspection.value.path.isNotEmpty) {
+        car.uploadDate = await uploadPdf(periodicInspection.value);
+      }
+
+      await _carsCollection.doc(car.carId).update(car.toJson());
+
+      // Clear all data after updating the car
+      clearAllData();
+
       isLoading.value = false;
+      currentOp('');
     } catch (e) {
       error.value = 'Error updating car: $e';
       isLoading.value = false;
+      currentOp('');
     }
   }
+
+  void clearAllData() {
+    // Reset all necessary fields
+    searchText!.value = '';
+    usedSelectedCity.value = 'الكل';
+    selectedGear.value = 'الكل';
+    selectedYear.value = 0;
+    selectedBrand.value = 0;
+    selectedChildBrand.value = 0;
+    selectedManufacturer!.value = 'تويوتا';
+    newSelectedBrand.value = 0;
+    newSelectedCity.value = 'الكل';
+    usedSelectedCity.value = 'الكل';
+    selectedCity.value = '';
+    initAuctionPrice.value = 100;
+    limitAuctionPrice.value = 0;
+    price.value = 0;
+    expireDate.value = DateTime.now();
+    imageList.value.clear();
+    addedImageList.value.clear();
+    periodicInspection.value = File('');
+  }
+
   Stream<List<Car>> getCarsByTypeAndCity(Type type, {String? city, String? brand}) {
     try {
       return _carsCollection.snapshots().map((snapshot) => snapshot.docs
@@ -318,13 +419,7 @@ class CarController extends GetxController {
       print('Error removing auction from car: $e');
     }
   }
-  List<String> filesToBase64(List<File> files) {
-    return files.map((file) {
-      List<int> fileBytes = file.readAsBytesSync();
-      String base64Image = base64Encode(fileBytes);
-      return base64Image;
-    }).toList();
-  }
+
 
 // Convert a list of base64 encoded strings to a list of File objects
   List<File> base64ToFiles(List<String> base64Strings) {
@@ -348,13 +443,9 @@ class CarController extends GetxController {
     }
   }
 
-  Future<void> makePhoneCall(String phoneNumber) async {
-    // Check for platform support
-    if (!await canLaunchUrl(Uri(scheme: 'tel', path: phoneNumber))) {
-      throw 'Could not launch ${Uri(scheme: 'tel', path: phoneNumber)}';
-    } else {
-      await launchUrl(Uri(scheme: 'tel', path: phoneNumber));
-    }
+  Future<void> openWhatsAppChat(String phoneNumber) async {
+    final whatsappUrl = Uri.parse("https://api.whatsapp.com/send/?phone=$phoneNumber");
+    launchUrl(whatsappUrl);
   }
 
   addPDFFile() async {

@@ -7,6 +7,8 @@ import 'package:moharrek/pages/auction/car_details_page.dart';
 import 'package:moharrek/pages/home/controller/carController.dart';
 import 'package:moharrek/pages/home/model/car.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 class CustomAuctionCarCard extends StatelessWidget {
   final Car car;
 
@@ -137,12 +139,15 @@ class CustomAuctionInfoCard extends StatelessWidget {
 
         Get.find<CarController>().limitAuctionPrice(auctions.isNotEmpty?auctions[0].amount:0);
         return snapshot.hasData?Container(
+
           decoration: BoxDecoration(
               border: Border.all(width: 1, color: Colors.blue),
               borderRadius: BorderRadius.circular(30)),
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          height: 100,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -155,15 +160,47 @@ class CustomAuctionInfoCard extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
+
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("ينتهي المزاد",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(snapshot.data!.expireDate)),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                const Text(
+                  "ينتهي المزاد",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                Column(
+                  children: [
+                    Text(
+                      DateFormat('dd/MM/yyyy hh:mm a').format(
+                        DateTime.parse(snapshot.data!.expireDate),
+                      ),
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+
+                  ],
+                ),
               ],
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: TimerCountdown(
+                colonsTextStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                descriptionTextStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                format: CountDownTimerFormat.daysHoursMinutesSeconds,
+                endTime: DateTime.parse(snapshot.data!.expireDate),
+                onEnd: () {
+                },
+                daysDescription: "أيام",
+                hoursDescription: "ساعات",
+                minutesDescription: "دقائق",
+                secondsDescription: "ثواني",
+              ),
+            ),
+
             const SizedBox(
               height: 10,
             ),
@@ -177,7 +214,7 @@ class CustomAuctionInfoCard extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: 5,
+              height: 20,
             )
           ]),
         ):const Center(child: CircularProgressIndicator());
@@ -209,67 +246,69 @@ class _CustomAuctionCarDetailHeaderState
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(15),
-        height: 260,
+        height: 290,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(width: 1, color: Colors.blue),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              // color: Colors.grey,
-              height: 190,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 160,
-                    child: PageView.builder(
-                      scrollDirection: Axis.horizontal,
-                      // reverse: true,
-                      onPageChanged: (value) {
-                        setState(() {});
-                      },
-                      itemCount: widget.carImages.length,
-                      itemBuilder: (context, index) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: widget.carImages[index],
-                            placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
-                          ),
-                        );
-                      },
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                // color: Colors.grey,
+                height: 190,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 160,
+                      child: PageView.builder(
+                        scrollDirection: Axis.horizontal,
+                        // reverse: true,
+                        onPageChanged: (value) {
+                          setState(() {});
+                        },
+                        itemCount: widget.carImages.length,
+                        itemBuilder: (context, index) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: widget.carImages[index],
+                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  Text(
-                    "لرؤية المزيد من الصور اسحب لليمين",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        fontFamily: "Rubik",
-                        fontWeight: FontWeight.w500),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 3,
+                    ),
+                    Text(
+                      "لرؤية المزيد من الصور اسحب لليمين",
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          fontFamily: "Rubik",
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            // SizedBox(
-            //   height: 5,
-            // ),
-
-            Text(
-              "${widget.make} ${widget.model} ${widget.year}",
-              style: const TextStyle(
-                  fontSize: 24,
-                  fontFamily: "Rubik",
-                  fontWeight: FontWeight.w500),
-            ),
-          ],
+              // SizedBox(
+              //   height: 5,
+              // ),
+          
+              Text(
+                "${widget.make} ${widget.model} ${widget.year}",
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontFamily: "Rubik",
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
         ));
   }
 }

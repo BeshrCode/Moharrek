@@ -1,11 +1,12 @@
-import 'dart:ffi';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:moharrek/components/text_form_field.dart';
 import 'package:moharrek/components/dropdown_menu_button.dart';
 import 'package:moharrek/components/year_picker.dart';
@@ -14,16 +15,14 @@ import 'package:moharrek/shared_pref.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:uuid/uuid.dart';
 import '../home/model/car.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class AddCarPage extends GetWidget<CarController> {
+class EditCarPage extends GetWidget<CarController> {
 
   String model = "";
   int year = 2024;
   TextEditingController mileage = TextEditingController();
 
-  final transmissionTypes = ['أوتوماتيك', 'عادي'];
+  final transmissionTypes = ['Automatic', 'Manual'];
 
   String transmissionType = 'أوتوماتيك';
 
@@ -34,32 +33,38 @@ class AddCarPage extends GetWidget<CarController> {
 
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  final Type type = Get.arguments;
+  final Car car;
 
-  // Add a bool variable to track the state of the checkbox
 
-  AddCarPage({super.key});
+  EditCarPage(this.car, {super.key});
 
-  String getCarType() {
-    if (type == Type.USED) {
+  String getCarType(){
+    if(car.type == Type.USED){
       return 'مستخدمة';
     }
-    if (type == Type.AUCTION) {
+    if(car.type == Type.AUCTION){
       return 'مزايدة';
     }
-    if (type == Type.NEW) {
+    if(car.type == Type.NEW){
       return 'وكالة';
     }
 
     return '';
   }
-
   @override
   Widget build(BuildContext context) {
+
+    mileage.text = '${car.mileage}';
+    controller.selectedCity(car.location);
+    bisPriceController.text = ('${car.bidPrice}');
+    priceController.text = ('${car.price}');
+    descriptionController.text = (car.description);
+    controller.addedImageList.value = car.images;
+    controller.expireDate(DateTime.parse(car.expireDate));
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "أضف مركبة (${getCarType()})",
+        title:  Text(
+          "تعديل مركبة (${getCarType()})",
           style: const TextStyle(fontSize: 24),
         ),
       ),
@@ -72,29 +77,29 @@ class AddCarPage extends GetWidget<CarController> {
                 hint: "اختر الشركة",
                 hintSearch: "ابحث عن الشركة...",
                 list: controller.manufacturers,
-                selectedValue: controller.selectedManufacturer!.value,
+                selectedValue: car.company,
                 onChanged: (value) {
-                  controller.selectedManufacturer!.value = value;
+                  car.company = value;
                   selectedModel = null;
                   // setState(() {});
                 }),
             const SizedBox(height: 20),
-            Obx(() {
-              return CustomDropdownMenuButton(
+
+          CustomDropdownMenuButton(
                   hint: "اختر المودل",
                   hintSearch: "ابحث عن المودل...",
-                  list: controller.models[controller.selectedManufacturer!
-                      .value] ?? ["تويوتا"],
-                  selectedValue: selectedModel,
+                  list: controller.models[car.company] ?? ['تويوتا'],
+                  selectedValue: car.model,
                   onChanged: (value) {
-                    selectedModel = value;
+                    car.model = value;
                     // setState(() {});
-                  });
-            }),
+                  }),
             const SizedBox(height: 20),
             // Text("اختر سنة التصنيع"),
-            CustomYearPicker(selectedYear: (value) {
-              year = value!;
+            CustomYearPicker(
+                selectedValue:  car.year,
+                selectedYear: (value) {
+              year = year;
             }),
             const SizedBox(height: 30),
 
@@ -108,7 +113,7 @@ class AddCarPage extends GetWidget<CarController> {
             const Text("حدد نظام القير"),
             const SizedBox(height: 5),
             ToggleSwitch(
-              initialLabelIndex: 0,
+              initialLabelIndex: car.transmissionType=='أوتوماتيك'?0:1,
               animate: true,
               animationDuration: 400,
               curve: Easing.legacy,
@@ -121,8 +126,9 @@ class AddCarPage extends GetWidget<CarController> {
               cornerRadius: 0,
               totalSwitches: 2,
               activeBgColor: const [Colors.blue],
-              labels: transmissionTypes,
+              labels: ['أوتوماتيك', 'عادي'],
               onToggle: (index) {
+                Logger().d(index);
                 transmissionType = transmissionTypes[index!];
               },
             ),
@@ -138,13 +144,13 @@ class AddCarPage extends GetWidget<CarController> {
                 child: Obx(() {
                   return Container(
                       decoration: BoxDecoration(
-                        color: controller.imageList.value.isEmpty
+                        color: controller.addedImageList.value.isEmpty
                             ? Colors.grey[200]
                             : Colors.blue[200],
                       ),
                       height: 100,
                       width: double.infinity,
-                      child: controller.imageList.value.isEmpty
+                      child: controller.addedImageList.value.isEmpty
                           ? const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -159,12 +165,25 @@ class AddCarPage extends GetWidget<CarController> {
                           ),
                         ],
                       )
-                          : ListView.builder(
+                          : controller.imageList.value.isNotEmpty?
+                      ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: controller.imageList.value.length,
                         itemBuilder: (context, index) {
                           return Image.file(
                             controller.imageList.value[index],
+                            height: 100,
+                            width: 100,
+                          );
+                        },
+                      )
+                          :
+                      ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.addedImageList.value.length,
+                        itemBuilder: (context, index) {
+                          return Image.network(
+                            controller.addedImageList.value[index],
                             height: 100,
                             width: 100,
                           );
@@ -183,55 +202,52 @@ class AddCarPage extends GetWidget<CarController> {
                 child: DottedBorder(
                   color: Colors.blue,
                   strokeWidth: 1,
-                  child: Obx(() {
-                    return Container(
-                        decoration: BoxDecoration(
-                          color: controller.periodicInspection.value.path
-                              .isEmpty
-                              ? Colors.grey[200]
-                              : Colors.blue[200],
-                        ),
-                        height: 80,
-                        width: double.infinity,
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.file_copy_outlined,
-                              size: 25,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              "ارفع ملف الفحص الدوري للمركبة",
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ],
-                        ));
-                  }),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        color: car.addDate
+                            .isEmpty
+                            ? Colors.grey[200]
+                            : Colors.blue[200],
+                      ),
+                      height: 80,
+                      width: double.infinity,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.file_copy_outlined,
+                            size: 25,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "ارفع ملف الفحص الدوري للمركبة",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ))
+
                 ),
               ),
             ),
             const SizedBox(height: 25),
             Visibility(
-              visible: type == Type.AUCTION ? true : false,
+              visible: car.type == Type.AUCTION?true:false,
               child: Column(
                 children: [
                   CustomTextField(
-                      isEnable: type == Type.AUCTION ? true : false,
-                      isValidate: type == Type.AUCTION ? true : false,
-                      inputType: TextInputType.number,
-                      maxLines: 1,
+                    isEnable: car.type==Type.AUCTION?true:false,
+                    isValidate: car.type==Type.AUCTION?true:false,
+                    inputType: TextInputType.number,
+                    maxLines: 1,
                       maxLength: 10,
-                      hint: "${type == Type.AUCTION
-                          ? 'الزيادة في السوم'
-                          : 'السعر'} (أجباري)",
+                      hint: "${car.type == Type.AUCTION?'الزيادة في السوم':'السعر'} (أجباري)",
                       controller: bisPriceController),
 
                 ],
               ),
             ),
             Visibility(
-              visible: type == Type.AUCTION ? true : false,
+              visible: car.type == Type.AUCTION ? true : false,
               child: Obx(() {
                 return Column(
                   children: [
@@ -263,8 +279,7 @@ class AddCarPage extends GetWidget<CarController> {
                             child: Column(
                               children: [
                                 const Text('أختر تاريخ و وقت أنتهاء المزاد'),
-                                Text(DateFormat('yyyy-MM-dd hh:mm a').format(
-                                    controller.expireDate!.value)
+                                Text(DateFormat('yyyy-MM-dd hh:mm a').format(controller.expireDate!.value)
                                 ),
                               ],
                             )
@@ -280,69 +295,34 @@ class AddCarPage extends GetWidget<CarController> {
             Column(
               children: [
                 CustomTextField(
-                    isEnable: true,
-                    isValidate: true,
-                    inputType: TextInputType.number,
-                    maxLines: 1,
+                  isEnable:  true,
+                  isValidate: true,
+                  inputType: TextInputType.number,
+                  maxLines: 1,
                     maxLength: 10,
-                    hint: "${type == Type.AUCTION
-                        ? 'بداية السوم'
-                        : 'السعر'} (أجباري)",
-                    controller: priceController),
+                    hint: "${car.type == Type.AUCTION?'بداية السوم':'السعر'} (أجباري)", controller: priceController),
 
               ],
             ),
             CustomTextField(
-                isEnable: true,
-                isValidate: false,
-                inputType: TextInputType.text,
-                maxLength: 100,
+              isEnable: true,
+              isValidate: false,
+              inputType: TextInputType.text,
+              maxLength: 100,
                 maxLines: 3,
-                hint: "الوصف (إختياري)",
-                controller: descriptionController),
+                hint: "الوصف (إختياري)", controller: descriptionController),
             const SizedBox(height: 20),
 
+
             CustomDropdownMenuButton(
-                hint: 'المدينة',
+                hint:'أختر المدينة',
                 list: controller.cites,
-                onChanged: (city) {
+                selectedValue:  car.location,
+                onChanged: (city){
                   controller.selectedCity(city);
                 },
                 hintSearch: 'ابحث عن مدينتك'),
 
-            const SizedBox(height: 20),
-
-            // Add the CheckboxListTile widget
-            Obx(() {
-              return CheckboxListTile(
-                title: RichText(
-                  text: TextSpan(
-                    text: 'اقرار ب ( استيفاء ',
-                    style: const TextStyle(color: Colors.black),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'الشروط',
-                        style: const TextStyle(color: Colors.blue),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            // Open the URL
-                            launchUrl(Uri.parse('https://www.absher.sa/wps/portal/individuals/static/guide/service-contents/!ut/p/z1/fYxBC4JAFITv_or14DHerqTUUTCKki5BrHuRTVd5JWvqKv38FpEwgi5vvhneDAiHEMcBbsXC8nwZEFqOWEmDjZY1cEhFmDEWbw7-nib0HEc0PNFgd90mjLIAjlNxOQLif4PPjfn9I5DivW1FBCJvtFEvA3wCbXqPoi5wxGKQtTWqV92IuerJYIlUAxZqkXrUdLIsMV_9JNmcMB8usoPnQ9zWkeu-AYMjhHA!'));
-                          },
-                      ),
-                      const TextSpan(
-                        text: ' نقل الملكية )',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                value: controller.isAcknowledged.value,
-                onChanged: (bool? value) {
-                  controller.isAcknowledged(value!);
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              );
-            }),
 
             const SizedBox(height: 20),
 
@@ -352,24 +332,7 @@ class AddCarPage extends GetWidget<CarController> {
                   return;
                 }
 
-                if (!controller.isAcknowledged.value) {
-                  AwesomeDialog(
-                      context: context,
-                      dialogType: DialogType.error,
-                      animType: AnimType.rightSlide,
-                      title: 'خطأ',
-                      desc: 'يجب الموافقة على شروط نقل الملكية',
-                      titleTextStyle: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                      descTextStyle: const TextStyle(fontSize: 14),
-                      btnOkColor: Colors.blue,
-                      btnOkText: "إغلاق",
-                      btnOkOnPress: () {})
-                      .show();
-                  return;
-                }
-
-                if (controller.imageList.value.isEmpty) {
+                if (controller.imageList.value.isEmpty&& car.images.isEmpty) {
                   AwesomeDialog(
                       context: context,
                       dialogType: DialogType.error,
@@ -414,51 +377,48 @@ class AddCarPage extends GetWidget<CarController> {
                     btnOkText: "استمرار",
                     btnCancelText: "إلغاء",
                     btnOkOnPress: () async {
-                      Car car = Car(
-                        bidPrice: bisPriceController.text.isEmpty ? 0 : double
-                            .parse(bisPriceController.text),
-                        carId: const Uuid().v4(),
-                        model: selectedModel ?? '',
+                      Car editedCar = Car(
+                        bidPrice: bisPriceController.text.isEmpty?0:double.parse(bisPriceController.text),
+                        carId: car.carId,
+                        model:car.model,
+                        paidBy: car.paidBy,
                         make: controller.selectedManufacturer!.value,
                         year: year,
-                        paidBy: '',
                         paid: false,
                         available: false,
                         seller: Preference.shared.getUserName()!,
                         sellerId: Preference.shared.getUserId()!,
                         sellerPhone: Preference.shared.getUserPhone()!,
-                        type: type,
+                        type: car.type,
                         price: double.parse(priceController.text.trim()),
                         location: controller.selectedCity.value,
-                        mileage: int.parse(mileage.text),
-                        uploadDate: DateTime.now().toString(),
-                        expireDate: controller.expireDate.value.toString(),
-                        addDate: DateTime.now().toString(),
+                        mileage:int.parse(mileage.text),
+                        uploadDate: car.uploadDate,
+                        expireDate:car.expireDate,
+                        addDate: car.addDate,
                         transmissionType: transmissionType,
-                        // Example
                         description: descriptionController.text.trim(),
-                        company: controller.selectedManufacturer!.value,
-                        images: [],
+                        company: car.company,
+                        images: car.images,
                         // Example
-                        auctions: [], // Example
+                        auctions: car.auctions, // Example
                       );
-                      await controller.addCar(car);
+                      await controller.updateCar(editedCar);
                       Get.back();
-
                       Get.snackbar(
-                          "تمت إضافة السيارة!",
-                          "تمت إضافة سيارتك بنجاح.",
+                          "تمت تحديث السيارة!",
+                          "تمت تحديث سيارتك بنجاح.",
                           snackPosition: SnackPosition.TOP);
+
                     },
                     btnCancelOnPress: () {})
                     .show();
               },
               child: Obx(() {
-                return controller.isLoading.isTrue ? const Center(
-                    child: CircularProgressIndicator()) : Text(
+                return controller.isLoading.isTrue?const Center(child: CircularProgressIndicator()):Text(
                   controller.isLoading.isTrue
                       ? '${controller.currentOp}'
-                      : 'نشر',
+                      : 'نحديث',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 );
               }),

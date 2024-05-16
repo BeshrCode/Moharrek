@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
     }else if(Preference.shared.getUserName()!.isNotEmpty){
       return AppPages.homePage;
     }else{
-      return AppPages.userName;
+      return AppPages.homePage;
     }
   }
 }

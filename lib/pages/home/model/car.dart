@@ -5,6 +5,12 @@ enum Type {
   USED,
   AUCTION
 }
+enum GearFilter {
+  All,
+  Manual,
+  Automatic,
+}
+
 enum CarStatus{
   PAID,
   AUCTION
@@ -17,6 +23,7 @@ class Car {
   bool paid;
   bool available;
   String seller;
+  String paidBy;
   String description;
   String company;
   String sellerId;
@@ -37,6 +44,7 @@ class Car {
   Car({
     required this.carId,
     required this.model,
+    required this.paidBy,
     required this.paid,
     required this.make,
     required this.year,
@@ -66,6 +74,7 @@ class Car {
       available: json['available'] ?? false,
       model: json['model'] ?? '',
       make: json['make'] ?? '',
+      paidBy: json['paidBy'] ?? '',
       year: json['year'] ?? 0,
       seller: json['seller'] ?? '',
       sellerPhone: json['sellerPhone'] ?? '',
@@ -100,6 +109,7 @@ class Car {
     return {
       'carId': carId,
       'model': model,
+      'paidBy': paidBy,
       'bidPrice': bidPrice,
       'paid': paid,
       'available': available,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:moharrek/app_pages.dart';
 import 'package:moharrek/pages/auth/controller/auth_controller.dart';
 import 'package:moharrek/components/auth_button.dart';
@@ -8,9 +7,6 @@ import 'package:moharrek/components/text_form_field.dart';
 
 class RegisterPage extends GetWidget<AuthController> {
   const RegisterPage({super.key});
-
-
-
 
   @override
   Widget build(BuildContext context) {

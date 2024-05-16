@@ -71,7 +71,8 @@ class ProfilePage extends GetWidget<AuthController> {
 
                     Visibility(
                       visible: snapshot.data!.admin,
-                      child: Column(children: [
+                      child:
+                      Column(children: [
                         const SizedBox(
                           height: 15,
                         ),
@@ -97,9 +98,6 @@ class ProfilePage extends GetWidget<AuthController> {
                       height: 10,
                     ),
                     Column(children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
                       InkWell(
                         onTap: () {
                           Get.toNamed(AppPages.addCarPage,arguments:Type.USED);
@@ -141,27 +139,30 @@ class ProfilePage extends GetWidget<AuthController> {
                         ),
                       ],),
                     ),
-                    Column(children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Get.toNamed(AppPages.addCarPage,arguments:Type.AUCTION);
-                        },
-                        child: const Row(
-                          children: [
-                            Icon(Icons.add_box_sharp),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text("أضافة سيارة في المزاد",
-                                style:
-                                TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          ],
+                    Visibility(
+                      visible: true,
+                      child: Column(children: [
+                        const SizedBox(
+                          height: 15,
                         ),
-                      ),
-                    ],),
+                        InkWell(
+                          onTap: () {
+                            Get.toNamed(AppPages.addCarPage,arguments:Type.AUCTION);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(Icons.add_box_sharp),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("أضافة سيارة في المزاد",
+                                  style:
+                                  TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ],),
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -201,7 +202,8 @@ class ProfilePage extends GetWidget<AuthController> {
                     ),
                   ],
                 ):const Center(child: CircularProgressIndicator());
-              }, stream: controller.getUserDataStream(),
+              },
+              stream: controller.getUserDataStream(),
             ),
           ),
 

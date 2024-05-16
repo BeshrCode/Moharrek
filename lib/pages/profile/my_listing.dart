@@ -13,12 +13,6 @@ class MyListingPage extends GetWidget<CarController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.toNamed(AppPages.addCarPage,arguments: Type.USED);
-          },
-          child: const Icon(Icons.add),
-        ),
         appBar: AppBar(
           title: const Text(
             "إعلاناتي",

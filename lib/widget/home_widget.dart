@@ -10,6 +10,7 @@ import 'package:moharrek/pages/home/controller/carController.dart';
 import 'package:moharrek/pages/home/model/car.dart';
 import 'package:moharrek/pages/home/new_car_details_page.dart';
 import 'package:moharrek/pages/home/used_car_details_page.dart';
+import 'package:moharrek/pages/profile/edit_car_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 class CarPrimarySpecific extends StatelessWidget {
   final String text;
@@ -96,67 +97,69 @@ class _CustomUsedCarCardState extends State<CustomUsedCarCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                   // width: 200,
                   // color: Colors.amber,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerRight,
-                        margin: const EdgeInsets.only(right: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${widget.car.make} ${widget.car.model}",
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Rubik",
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              " سنة الصنع: ${widget.car.year}",
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: "Rubik",
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              "البائع : ${widget.car.seller}",
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: "Rubik",
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerRight,
+                          margin: const EdgeInsets.only(right: 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${widget.car.make} ${widget.car.model}",
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Rubik",
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                " سنة الصنع: ${widget.car.year}",
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: "Rubik",
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                "البائع : ${widget.car.seller}",
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: "Rubik",
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CarPrimarySpecific(
-                              image: "images/car_card/dollar.png",
-                              text: formatter.format(widget.car.price),
-                            ),
-                            CarPrimarySpecific(
-                              image: "images/car_card/location.png",
-                              text: widget.car.location,
-                            ),
-                            CarPrimarySpecific(
-                              image: "images/car_card/speedometer.png",
-                              text: "${widget.car.mileage}",
-                            ),
-                            const CarPrimarySpecific(
-                              image: "images/car_card/upload.png",
-                              text: "Pdf",
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CarPrimarySpecific(
+                                image: "images/car_card/dollar.png",
+                                text: formatter.format(widget.car.price),
+                              ),
+                              CarPrimarySpecific(
+                                image: "images/car_card/location.png",
+                                text: widget.car.location,
+                              ),
+                              CarPrimarySpecific(
+                                image: "images/car_card/speedometer.png",
+                                text: "${widget.car.mileage}",
+                              ),
+                              const CarPrimarySpecific(
+                                image: "images/car_card/upload.png",
+                                text: "Pdf",
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -318,29 +321,31 @@ class MyListingCarCard extends GetWidget<CarController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                car.model,
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: "Rubik",
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                " السنة: ${car.year}",
-                                style: const TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: "Rubik",
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  car.model,
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: "Rubik",
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  " السنة: ${car.year}",
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: "Rubik",
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         IconButton(
@@ -365,6 +370,12 @@ class MyListingCarCard extends GetWidget<CarController> {
                             ).show();
                           },
                           icon: const Icon(Icons.delete),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Get.to(EditCarPage(car));
+                          },
+                          icon: const Icon(Icons.edit),
                         )
                       ],
                     ),

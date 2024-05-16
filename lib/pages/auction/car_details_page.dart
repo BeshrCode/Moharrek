@@ -1,12 +1,9 @@
-// import 'dart:js';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 import 'package:moharrek/pages/auth/controller/auth_controller.dart';
-import 'package:moharrek/pages/auth/model/user.dart';
 import 'package:moharrek/pages/home/controller/carController.dart';
 import 'package:moharrek/pages/home/model/bidding.dart';
 import 'package:moharrek/pages/home/model/car.dart';
@@ -14,7 +11,6 @@ import 'package:moharrek/shared_pref.dart';
 import 'package:moharrek/widget/action_price_dropdownmenu.dart';
 import 'package:moharrek/widget/auction_widget.dart';
 import 'package:moharrek/components/button.dart';
-import 'package:moharrek/components/text_form_field.dart';
 
 class AuctionCarDetailPage extends GetWidget<CarController> {
   GlobalKey<FormState> fState = GlobalKey();
@@ -24,76 +20,7 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
   final Car _car = Get.arguments;
 
 
-  Future openDialog(BuildContext context,double bidLimit) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          controller.initAuctionPrice(100);
-          return Form(
-            key: fState,
-            child: AlertDialog(
-              title: const Text("أدخل مبلغ المزايدة"),
-              content: AuctionPriceDropDown(onAuctionChanged: (val ) {
-                controller.initAuctionPrice.value = double.parse(val!);
-              },),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      if (!fState.currentState!.validate()) {
-                        return;
-                      }
-                      AwesomeDialog(
-                          context: context,
-                          dialogType: DialogType.warning,
-                          animType: AnimType.rightSlide,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          title: 'تنبيه',
-                          desc:
-                              "عزيزي المستخدم.\nنأمل أن تدرك أن انسحابك من المزاد بعد الاشتراك فيه سيعرضك لعقوبات قانونية، يرجى تقديم عروضكم بجدية والالتزام بالشروط والأحكام.",
-                          titleTextStyle: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                          descTextStyle: const TextStyle(fontSize: 14),
-                          btnOkColor: Colors.blue,
-                          btnOkText: "استمرار",
-                          btnCancelText: "إالغاء",
-                          btnOkOnPress: ()async {
 
-                            AwesomeDialog(
-                              context: context,
-                              dismissOnTouchOutside: false,
-                              dialogType: DialogType.success,
-                              animType: AnimType.rightSlide,
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              title: 'تم الاشتراك',
-                              desc: "تم إضافة مبلغ المزايدة بنجاح",
-                              titleTextStyle: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              descTextStyle: const TextStyle(fontSize: 14),
-                              btnOkColor: Colors.blue,
-                              btnOkText: "استمرار",
-                              btnOkOnPress: () {
-                                Navigator.of(context).pop();
-                              },
-                            ).show();
-                            // Navigator.of(context).pop();
-                          },
-                          btnCancelOnPress: () {
-                            Navigator.of(context).pop();
-                          }).show();
-                    },
-                    child: const Text("موافق"))
-              ],
-            ),
-          );
-        });
-  }
-
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  //   bidAmount.dispose();
-  // }
   String formattedDate(String dateTime) {
     var format = DateFormat.yMd('en_US');
     return format.format(DateTime.parse(dateTime));
@@ -115,7 +42,7 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
               _car.auctions.sort((a, b) => b.amount.compareTo(a.amount),);
             }
             controller.price(car.price);
-            bool isLastMe = car.auctions[car.auctions.length-1].participantId==Preference.shared.getUserId();
+            bool isLastMe =car.auctions.isNotEmpty?car.auctions[car.auctions.length-1].participantId==Preference.shared.getUserId():false;
             return snapshot.connectionState!=ConnectionState.waiting? ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
@@ -129,6 +56,9 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
 
                 AuctionBidders(actions: car.auctions),
                 const SizedBox(height: 10),
+                Visibility(
+                    visible: status(car)=='الشراء',
+                    child: const Center(child: Text('انت الفائز'))),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: CustomeButton(
@@ -137,7 +67,18 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
                       height: 5,
                       onPressed: () async{
 
-                        if(!isLastMe){
+                        if(status(car)=='الشراء'){
+                          Get.snackbar('تم الشراء', 'تمت عملية الشراء بنجاح');
+                          await controller.updateCarPaymentStatus(car.carId,true,Preference.shared.getUserId()!);
+                          //here show dialog with lottie and message paid success
+                        }else if(status(car)=='حظر المستخدم'){
+                          car.auctions.sort((a, b) => b.amount.compareTo(a.amount),);
+                          Get.find<AuthController>().blockUser(car.auctions[0].participantId);
+                        }else if(status(car)=='انتهت المزايدة'){
+                          Get.snackbar('انتهت المزايدة', 'لأيمكنك المزايدة');
+                        }else if(status(car)=='تم الشراء'){
+                          Get.snackbar('انتهت المزايدة', 'لأيمكنك المزايدة');
+                        }else if(!isLastMe){
                           var pr = _car.auctions.isEmpty?controller.price.value:controller.limitAuctionPrice.value;
                           await controller.addAuction(
                               Auction(carId: _car.carId,
@@ -148,7 +89,10 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
                                   expiryDate: DateTime.now())
                           );
                         }else{
-                          Get.snackbar('Last One is You', 'Can not add');
+                          Get.snackbar(
+                            "أنت آخر مزايد", // Arabic translation for "Last One is You"
+                            "لا يمكنك المزايدة", // Arabic translation for "Can not add"
+                          );
                         }
                         // isExpire(car.expireDate)?null:openDialog(context,car.price);
                       },
@@ -245,6 +189,8 @@ class _AuctionBiddersState extends State<AuctionBidders> {
               itemCount: widget.actions.length,
               itemBuilder: (context, index) {
                 count++;
+                bool isMe = widget.actions[index].participantId == Preference.shared.getUserId();
+                String userName = isMe?widget.actions[index].participantName:"مستخدم";
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -263,12 +209,12 @@ class _AuctionBiddersState extends State<AuctionBidders> {
                           width: 10,
                         ),
                         index == 0
-                            ? Text(widget.actions[index].participantName,
+                            ? Text(userName,
                                 style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.orange))
-                            : Text(widget.actions[index].participantName,
+                            : Text(userName,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
