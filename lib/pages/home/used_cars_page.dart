@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import '../../components/brand_widget.dart';
 import '../../components/dropdown_menu_button.dart';
 import '../../components/year_picker.dart';
@@ -12,7 +13,6 @@ class UsedCarTabBarView extends GetWidget<CarController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.clearFilters();
     return ListView(
       children: [
         Row(
@@ -61,6 +61,9 @@ class UsedCarTabBarView extends GetWidget<CarController> {
               return InkWell(
                 splashColor: Colors.white,
                 onTap: () {
+                  if(index==0){
+                    controller.clearAllData();
+                  }
                   controller.selectBrand(index);
                 },
                 child: BrandWidget(controller: controller,
@@ -71,6 +74,9 @@ class UsedCarTabBarView extends GetWidget<CarController> {
           ),
         ),
         Obx(() {
+
+          final String selectedBrand =controller.brands[controller.selectedBrand.value==0?1:controller.selectedBrand.value];
+          Logger().d(selectedBrand);
           return Visibility(
             visible: controller.selectedBrand.value != 0,
             child: Container(
@@ -78,8 +84,7 @@ class UsedCarTabBarView extends GetWidget<CarController> {
               height: 40,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: controller.models[controller.selectedManufacturer!
-                    .value]!.length,
+                itemCount: controller.models[selectedBrand]!.length,
                 itemBuilder: (context, index) {
                   return InkWell(
                     splashColor: Colors.white,
@@ -89,8 +94,7 @@ class UsedCarTabBarView extends GetWidget<CarController> {
                     child: BrandChildWidget(
                       controller: controller,
                       index: index,
-                      list: controller.models[controller.selectedManufacturer!
-                          .value] ?? ["تويوتا"],
+                      list: controller.models[selectedBrand] ?? ["تويوتا"],
                     ),
                   );
                 },

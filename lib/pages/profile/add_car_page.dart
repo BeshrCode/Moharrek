@@ -216,16 +216,13 @@ class AddCarPage extends GetWidget<CarController> {
               visible: type == Type.AUCTION ? true : false,
               child: Column(
                 children: [
-                  CustomTextField(
-                      isEnable: type == Type.AUCTION ? true : false,
-                      isValidate: type == Type.AUCTION ? true : false,
-                      inputType: TextInputType.number,
-                      maxLines: 1,
-                      maxLength: 10,
-                      hint: "${type == Type.AUCTION
-                          ? 'الزيادة في السوم'
-                          : 'السعر'} (أجباري)",
-                      controller: bisPriceController),
+                  CustomDropdownMenuButton(hint: 'الزيادة في السوم', list: [
+                    '100',
+                    '500',
+                    '1000'
+                  ], onChanged: (value){
+                    bisPriceController.text = value;
+                  }, hintSearch: ''),
 
                 ],
               ),
@@ -326,7 +323,7 @@ class AddCarPage extends GetWidget<CarController> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             // Open the URL
-                            launchUrl(Uri.parse('https://www.absher.sa/wps/portal/individuals/static/guide/service-contents/!ut/p/z1/fYxBC4JAFITv_or14DHerqTUUTCKki5BrHuRTVd5JWvqKv38FpEwgi5vvhneDAiHEMcBbsXC8nwZEFqOWEmDjZY1cEhFmDEWbw7-nib0HEc0PNFgd90mjLIAjlNxOQLif4PPjfn9I5DivW1FBCJvtFEvA3wCbXqPoi5wxGKQtTWqV92IuerJYIlUAxZqkXrUdLIsMV_9JNmcMB8usoPnQ9zWkeu-AYMjhHA!'));
+                            launchUrl(Uri.parse('https://www.absher.sa/wps/portal/individuals/static/vot/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8ziDQ1dLDyM3A18LAwsnAwCXdzcjZxCjQ0MQs31w8EKTJ0DnD0tfI0N3QNCzQ2M3MxNvJzNvN3DDMz1o4jRb4ADOBoQpx-Pgij8xofrR4GV4PMBITOCU_P0C3JDQyMMskwAsMTGNw!!/dz/d5/L0lHSkovd0RNQUZrQUVnQSEhLzROVkUvYXI!/'));
                           },
                       ),
                       const TextSpan(

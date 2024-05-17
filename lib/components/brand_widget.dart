@@ -15,7 +15,7 @@ class BrandWidget extends StatelessWidget {
     return Obx(() {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        width: 70,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
             color: controller.selectedBrand == index ? Colors.blue : Colors
                 .grey[400], borderRadius: BorderRadius.circular(10)),
@@ -41,8 +41,8 @@ class BrandChildWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        width: 70,
         decoration: BoxDecoration(
             color: controller.selectedChildBrand == index ? Colors.blue : Colors
                 .grey[400], borderRadius: BorderRadius.circular(10)),

@@ -7,13 +7,24 @@ import '../../widget/home_widget.dart';
 import 'controller/carController.dart';
 import 'model/car.dart';
 
-class NewCarTabView extends GetWidget<CarController> {
-  const NewCarTabView({super.key});
+class NewCarTabView extends StatefulWidget {
+  const NewCarTabView({Key? key}) : super(key: key);
+
+  @override
+  _NewCarTabViewState createState() => _NewCarTabViewState();
+}
+
+class _NewCarTabViewState extends State<NewCarTabView> {
+  final CarController controller = Get.find<CarController>();
+
+  @override
+  void initState() {
+    super.initState();
+    // controller.clearFilters();
+  }
 
   @override
   Widget build(BuildContext context) {
-    controller.clearFilters();
-
     return ListView(
       children: [
         Row(
@@ -30,7 +41,6 @@ class NewCarTabView extends GetWidget<CarController> {
             const SizedBox(width: 10,),
             Expanded(
               child: CustomYearPicker(selectedYear: (value) {
-                // year = value;
                 controller.selectedYear(value);
               }),
             ),
@@ -51,10 +61,8 @@ class NewCarTabView extends GetWidget<CarController> {
             style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
           ),
         ),
-
         SizedBox(
           height: 40,
-          // color: Colors.amber,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: controller.brands.length,
@@ -64,9 +72,7 @@ class NewCarTabView extends GetWidget<CarController> {
                 onTap: () {
                   controller.selectBrand(index);
                 },
-                child: BrandWidget(controller: controller,
-                    index: index,
-                    list: controller.brands),
+                child: BrandWidget(controller: controller, index: index, list: controller.brands),
               );
             },
           ),
@@ -79,8 +85,7 @@ class NewCarTabView extends GetWidget<CarController> {
               height: 40,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: controller.models[controller.selectedManufacturer!
-                    .value]!.length,
+                itemCount: controller.models[controller.selectedManufacturer!.value]!.length,
                 itemBuilder: (context, index) {
                   return InkWell(
                     splashColor: Colors.white,
@@ -90,8 +95,7 @@ class NewCarTabView extends GetWidget<CarController> {
                     child: BrandChildWidget(
                       controller: controller,
                       index: index,
-                      list: controller.models[controller.selectedManufacturer!
-                          .value] ?? ["تويوتا"],
+                      list: controller.models[controller.selectedManufacturer!.value] ?? ["تويوتا"],
                     ),
                   );
                 },
@@ -105,9 +109,7 @@ class NewCarTabView extends GetWidget<CarController> {
             style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         SingleChildScrollView(
           child: Column(
             children: [
@@ -115,7 +117,7 @@ class NewCarTabView extends GetWidget<CarController> {
                 stream: controller.getCarsByType(Type.NEW),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if(snapshot.data!.isEmpty){
+                    if (snapshot.data!.isEmpty) {
                       return const Center(child: Text("لأتوجد سيارات متوفرة"));
                     }
                     return Obx(() {
@@ -128,19 +130,11 @@ class NewCarTabView extends GetWidget<CarController> {
                         final String selectedModel = controller.models[controller.selectedManufacturer!.value]![selectedMod];
                         final String selectedBrand = controller.brands[controller.selectedBrand.value];
 
-                        // Check if the selected city is "الكل" or matches the car's location
                         final bool cityMatch = selectedCity == 'الكل' || element.location == selectedCity;
-                        // Check if the selected gear is "الكل" or matches the car's transmission type
                         final bool gair = selectedGair == 'الكل' || element.transmissionType == selectedGair;
                         final bool year = selectedYear == 0 || element.year == selectedYear;
-
-                        // Check if the selected brand is "الكل" or matches the car's brand
                         final bool brandMatch = selectedBrand == 'الكل' || selectedBrand == element.company;
-
-                        // Check if the selected model is "الكل" or matches the car's model
                         final bool modelMatch = selectedMod == 0 || selectedModel == element.model;
-
-                        // Check if the car's details contain the searchText
                         final bool textMatch = element.model.toLowerCase().contains(searchText) ||
                             element.make.toLowerCase().contains(searchText) ||
                             element.seller.toLowerCase().contains(searchText) ||
@@ -148,7 +142,6 @@ class NewCarTabView extends GetWidget<CarController> {
                             element.company.toLowerCase().contains(searchText) ||
                             element.location.toLowerCase().contains(searchText);
 
-                        // Return true if all conditions match
                         return cityMatch && brandMatch && modelMatch && textMatch && gair && year;
                       });
 
@@ -175,10 +168,7 @@ class NewCarTabView extends GetWidget<CarController> {
               ),
             ],
           ),
-        )
-
-
-        // BottomNavigationBar(items: items)
+        ),
       ],
     );
   }
@@ -193,18 +183,16 @@ class NewCarTabView extends GetWidget<CarController> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  // Handle selection of "الكل"
                   controller.selectGearFilter('الكل');
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 2),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: controller.selectedGear.value =='الكل'
-                          ? Colors.blue // Selected border color
-                          : Colors.grey, // Default border color
+                      color: controller.selectedGear.value == 'الكل'
+                          ? Colors.blue
+                          : Colors.grey,
                       width: 2,
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -213,8 +201,8 @@ class NewCarTabView extends GetWidget<CarController> {
                     'الكل',
                     style: TextStyle(
                       color: controller.selectedGear.value == "الكل"
-                          ? Colors.blue // Selected text color
-                          : Colors.black, // Default text color
+                          ? Colors.blue
+                          : Colors.black,
                     ),
                   ),
                 ),
@@ -223,19 +211,16 @@ class NewCarTabView extends GetWidget<CarController> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  // Handle selection of "عادي"
                   controller.selectGearFilter('عادي');
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 2),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: controller.selectedGear.value ==
-                          'عادي'
-                          ? Colors.blue // Selected border color
-                          : Colors.grey, // Default border color
+                      color: controller.selectedGear.value == 'عادي'
+                          ? Colors.blue
+                          : Colors.grey,
                       width: 2,
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -243,10 +228,9 @@ class NewCarTabView extends GetWidget<CarController> {
                   child: Text(
                     'عادي',
                     style: TextStyle(
-                      color: controller.selectedGear.value ==
-                          'عادي'
-                          ? Colors.blue // Selected text color
-                          : Colors.black, // Default text color
+                      color: controller.selectedGear.value == 'عادي'
+                          ? Colors.blue
+                          : Colors.black,
                     ),
                   ),
                 ),
@@ -254,19 +238,16 @@ class NewCarTabView extends GetWidget<CarController> {
             ),
             GestureDetector(
               onTap: () {
-                // Handle selection of "أوتوماتيك"
                 controller.selectGearFilter('أوتوماتيك');
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 2),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: controller.selectedGear.value ==
-                        'أوتوماتيك'
-                        ? Colors.blue // Selected border color
-                        : Colors.grey, // Default border color
+                    color: controller.selectedGear.value == 'أوتوماتيك'
+                        ? Colors.blue
+                        : Colors.grey,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(10),
@@ -274,10 +255,9 @@ class NewCarTabView extends GetWidget<CarController> {
                 child: Text(
                   'أوتوماتيك',
                   style: TextStyle(
-                    color: controller.selectedGear.value ==
-                        'أوتوماتيك'
-                        ? Colors.blue // Selected text color
-                        : Colors.black, // Default text color
+                    color: controller.selectedGear.value == 'أوتوماتيك'
+                        ? Colors.blue
+                        : Colors.black,
                   ),
                 ),
               ),
@@ -287,6 +267,4 @@ class NewCarTabView extends GetWidget<CarController> {
       );
     });
   }
-
-
 }

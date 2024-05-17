@@ -315,82 +315,84 @@ class MyListingCarCard extends GetWidget<CarController> {
 
                 // width: 200,
                 // color: Colors.amber,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  car.model,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Rubik",
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  " السنة: ${car.year}",
-                                  style: const TextStyle(
-                                      fontSize: 12,
-                                      fontFamily: "Rubik",
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    car.model,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: "Rubik",
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    " السنة: ${car.year}",
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: "Rubik",
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            AwesomeDialog(
-                              context: context,
-                              dialogType: DialogType.warning,
-                              animType: AnimType.rightSlide,
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              title: 'حذف',
-                              desc: "هل أنت متأكد من حذف هذا الإعلان؟",
-                              titleTextStyle: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              descTextStyle: const TextStyle(fontSize: 14),
-                              btnOkColor: Colors.blue,
-                              btnOkText: "استمرار",
-                              btnCancelText: "إالغاء",
-                              btnOkOnPress: () async{
-                                await controller.deleteCar(car.carId);
-                              },
-                              btnCancelOnPress: () {},
-                            ).show();
-                          },
-                          icon: const Icon(Icons.delete),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Get.to(EditCarPage(car));
-                          },
-                          icon: const Icon(Icons.edit),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CarPrimarySpecific(
-                          image: "images/car_card/upload.png",
-                          text: timeAgo,
-                          imageHeight: 25,
-                          imageWidth: 25,
-                        )
-                      ],
-                    )
-                  ],
+                          IconButton(
+                            onPressed: () {
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.warning,
+                                animType: AnimType.rightSlide,
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                title: 'حذف',
+                                desc: "هل أنت متأكد من حذف هذا الإعلان؟",
+                                titleTextStyle: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                descTextStyle: const TextStyle(fontSize: 14),
+                                btnOkColor: Colors.blue,
+                                btnOkText: "استمرار",
+                                btnCancelText: "إالغاء",
+                                btnOkOnPress: () async{
+                                  await controller.deleteCar(car.carId);
+                                },
+                                btnCancelOnPress: () {},
+                              ).show();
+                            },
+                            icon: const Icon(Icons.delete),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Get.to(EditCarPage(car));
+                            },
+                            icon: const Icon(Icons.edit),
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CarPrimarySpecific(
+                            image: "images/car_card/upload.png",
+                            text: timeAgo,
+                            imageHeight: 25,
+                            imageWidth: 25,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -889,7 +891,7 @@ class _UsedCarDetailCardState extends State<UsedCarDetailCard> {
                   fontWeight: FontWeight.w500),
             ),
             Text(
-              widget.car.transmissionType=='أوتوماتيك'? "عادي" : "اوتوماتيك",
+              widget.car.transmissionType=='أوتوماتيك'? "اوتوماتيك" : "عادي",
               style: const TextStyle(
                   fontSize: 18,
                   fontFamily: "Rubik",

@@ -52,7 +52,7 @@ class CarController extends GetxController {
     "الدمام", // Dammam
     "الخبر", // Khobar
     "الطائف", ];
-  List<String> brands = ['الكل','تويوتا','فورد','بي إم دبليو','هوندا','نيسان','Lex'];
+  List<String> brands = ['الكل','تويوتا','فورد','بي إم دبليو','نيسان','Lex'];
   List<String> manufacturers = [
     "تويوتا",
     "نيسان",

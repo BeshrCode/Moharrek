@@ -79,7 +79,7 @@ class AuctionCarDetailPage extends GetWidget<CarController> {
                         }else if(status(car)=='تم الشراء'){
                           Get.snackbar('انتهت المزايدة', 'لأيمكنك المزايدة');
                         }else if(!isLastMe){
-                          var pr = _car.auctions.isEmpty?controller.price.value:controller.limitAuctionPrice.value;
+                          var pr = car.auctions.isEmpty?controller.price.value:controller.limitAuctionPrice.value;
                           await controller.addAuction(
                               Auction(carId: _car.carId,
                                   participantId: Preference.shared.getUserId()!,
